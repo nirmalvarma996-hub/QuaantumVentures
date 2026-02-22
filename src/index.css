@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+/* ========== CUSTOM THEME ========== */
+@theme {
+  --color-gold: #C6A84A;
+  --color-gold-light: #D4BC6A;
+  --color-gold-dark: #A88E3A;
+  --color-maroon: #6A1B1A;
+  --color-maroon-light: #8B2E2D;
+  --color-maroon-dark: #4A1211;
+  --color-ivory: #FFFFF0;
+  --color-ivory-warm: #FFF8E7;
+  --color-charcoal: #1A1A1A;
+  --color-charcoal-light: #2D2D2D;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Poppins', sans-serif;
+}
+
+/* ========== BASE STYLES ========== */
+/* Note: Do NOT add `* { margin: 0; padding: 0; }` here.
+   Tailwind v4's preflight handles this, and a raw `*` selector
+   would override Tailwind utilities like mx-auto, px-4, etc. */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-ivory);
+  color: var(--color-charcoal);
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+/* ========== SCROLLBAR STYLING ========== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-charcoal);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold);
+  border-radius: 4px;
+}
+
+/* ========== GLASSMORPHISM ========== */
+.glass-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(198, 168, 74, 0.3);
+  border-radius: 16px;
+}
+
+.glass-card-dark {
+  background: rgba(26, 26, 26, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(198, 168, 74, 0.2);
+  border-radius: 16px;
+}
+
+/* ========== GOLD SHIMMER ANIMATION ========== */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.gold-shimmer {
+  background: linear-gradient(90deg,
+      var(--color-charcoal) 0%,
+      var(--color-gold) 25%,
+      var(--color-gold-light) 50%,
+      var(--color-gold) 75%,
+      var(--color-charcoal) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* ========== BALAJI MOTIF WATERMARK ========== */
+.balaji-watermark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  opacity: 0.02;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='90' fill='none' stroke='%23C6A84A' stroke-width='2'/%3E%3Ccircle cx='100' cy='100' r='80' fill='none' stroke='%23C6A84A' stroke-width='1'/%3E%3Cpath d='M100 20 L120 60 L100 50 L80 60 Z' fill='%23C6A84A'/%3E%3Ccircle cx='100' cy='85' r='25' fill='none' stroke='%23C6A84A' stroke-width='1.5'/%3E%3Cpath d='M60 120 Q100 160 140 120' fill='none' stroke='%23C6A84A' stroke-width='1.5'/%3E%3Cpath d='M70 140 Q100 170 130 140' fill='none' stroke='%23C6A84A' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* ========== BUTTON STYLES ========== */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--color-gold), var(--color-gold-dark));
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+}
+
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(198, 168, 74, 0.4);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: transparent;
+  color: var(--color-gold);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 2px solid var(--color-gold);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+}
+
+.btn-outline:hover {
+  background: var(--color-gold);
+  color: var(--color-charcoal);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(198, 168, 74, 0.3);
+}
+
+/* ========== SECTION SPACING ========== */
+.section-padding {
+  padding: 100px 24px;
+}
+
+/* ========== GOLD DIVIDER ========== */
+.gold-divider {
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  margin: 0 auto;
+}
+
+/* ========== FLOATING BUTTONS ========== */
+.floating-whatsapp {
+  position: fixed;
+  bottom: 90px;
+  right: 24px;
+  z-index: 999;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25D366;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  text-decoration: none;
+}
+
+.floating-whatsapp:hover {
+  transform: scale(1.1);
+}
+
+.floating-call {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-gold), var(--color-gold-dark));
+  color: var(--color-charcoal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 20px rgba(198, 168, 74, 0.4);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  text-decoration: none;
+}
+
+.floating-call:hover {
+  transform: scale(1.1);
+}
