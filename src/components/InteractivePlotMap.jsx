@@ -248,18 +248,43 @@ export default function InteractivePlotMap() {
                                         </span>
                                     </div>
                                     <div className="space-y-1 text-sm">
-                                        {[
-                                            ['Dimensions', `${hoveredPlot.lengthFt}' × ${hoveredPlot.widthFt}'`],
-                                            ['Area', `${hoveredPlot.sqft} sq.ft`],
-                                            ['Ankanams', hoveredPlot.ankanams],
-                                            ['Cents', hoveredPlot.cents],
-                                            ['Facing', hoveredPlot.facing],
-                                        ].map(([label, value]) => (
-                                            <div key={label} className="flex justify-between">
-                                                <span className="text-ivory/50">{label}</span>
-                                                <span className="text-ivory font-medium">{value}</span>
-                                            </div>
-                                        ))}
+                                        <div className="flex justify-between border-b border-gold/10 pb-1 mb-1">
+                                            <span className="text-ivory/60 font-medium">Facing</span>
+                                            <span className="text-ivory font-bold">{hoveredPlot.facing}</span>
+                                        </div>
+                                        {hoveredPlot.irregularDimensions ? (
+                                            <>
+                                                <div className="flex justify-between border-b border-gold/10 pb-1 mb-1 mt-2">
+                                                    <span className="text-gold/80 font-semibold text-xs tracking-wider uppercase">Site Measures</span>
+                                                </div>
+                                                {[
+                                                    ['West Side', hoveredPlot.irregularDimensions.west],
+                                                    ['East Side', hoveredPlot.irregularDimensions.east],
+                                                    ['North Side', hoveredPlot.irregularDimensions.north],
+                                                    ['South Side', hoveredPlot.irregularDimensions.south],
+                                                    ['Area', `${hoveredPlot.sqft} sq.ft`],
+                                                    ['Ankanams', `${hoveredPlot.ankanams}`],
+                                                    ['Cents', `${hoveredPlot.cents}`],
+                                                ].filter(([_, val]) => val).map(([label, value]) => (
+                                                    <div key={label} className="flex justify-between">
+                                                        <span className="text-ivory/60 font-medium">{label}</span>
+                                                        <span className="text-ivory font-bold">{value}</span>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        ) : (
+                                            [
+                                                ['Dimensions', `${hoveredPlot.lengthFt}′ × ${hoveredPlot.widthFt}′`],
+                                                ['Area', `${hoveredPlot.sqft} sq.ft`],
+                                                ['Ankanams', hoveredPlot.ankanams],
+                                                ['Cents', hoveredPlot.cents],
+                                            ].map(([label, value]) => (
+                                                <div key={label} className="flex justify-between">
+                                                    <span className="text-ivory/60 font-medium">{label}</span>
+                                                    <span className="text-ivory font-bold">{value}</span>
+                                                </div>
+                                            ))
+                                        )}
                                     </div>
                                 </div>
                             </motion.div>

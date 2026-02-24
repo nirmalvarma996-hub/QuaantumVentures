@@ -1,4 +1,4 @@
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from 'react-icons/fa';
+import { FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 
 /**
  * Footer Component
@@ -50,9 +50,9 @@ export default function Footer() {
                     <div>
                         <h4 className="text-gold font-heading text-lg font-semibold mb-6">Contact Us</h4>
                         <div className="space-y-4">
-                            <a href="tel:+919876543210" className="flex items-center gap-3 text-ivory/40 hover:text-gold text-sm transition-colors no-underline">
+                            <a href="tel:+916301102828" className="flex items-center gap-3 text-ivory/40 hover:text-gold text-sm transition-colors no-underline">
                                 <FaPhone className="text-gold/60" />
-                                +91 98765 43210
+                                +91 63011 02828
                             </a>
                             <a href="mailto:info@quantammventures.com" className="flex items-center gap-3 text-ivory/40 hover:text-gold text-sm transition-colors no-underline">
                                 <FaEnvelope className="text-gold/60" />
@@ -93,20 +93,7 @@ export default function Footer() {
                         © {currentYear} Quantamm Ventures. All rights reserved.
                     </p>
                     <div className="flex items-center gap-4">
-                        {[
-                            { icon: FaFacebook, href: '#' },
-                            { icon: FaInstagram, href: '#' },
-                            { icon: FaYoutube, href: '#' },
-                            { icon: FaLinkedin, href: '#' },
-                        ].map((social, i) => (
-                            <a
-                                key={i}
-                                href={social.href}
-                                className="w-10 h-10 rounded-full border border-gold/15 flex items-center justify-center text-ivory/40 hover:text-gold hover:border-gold/40 transition-all no-underline"
-                            >
-                                <social.icon className="text-sm" />
-                            </a>
-                        ))}
+                        {/* Social links removed as requested */}
                     </div>
                 </div>
             </div>

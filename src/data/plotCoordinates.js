@@ -6,7 +6,7 @@
  * ViewBox: 0 0 900 1150
  */
 
-import { calculateArea } from '../utils/areaCalculator';
+import { calculateArea, calculateIrregularArea } from '../utils/areaCalculator';
 
 /* ═══════════════════════════════════════════════════════════════
    GRID REFERENCE POINTS (SVG coordinates)
@@ -50,8 +50,8 @@ export const GRID = {
 export const BOUNDARY_POINTS = [
     [420, 40],    // Peak (conical top)
     [640, 280],   // Right boundary top (steeper incline)
-    [640, 1090],  // Right boundary bottom
-    [120, 1090],  // Left boundary bottom (inclined rightwards)
+    [635, 1100],  // Right boundary bottom (inclined slightly left and lowered)
+    [120, 1120],  // Left boundary bottom (lowered)
     [80, 200],    // Left boundary top
 ];
 
@@ -60,18 +60,36 @@ export const BOUNDARY_POINTS = [
    ═══════════════════════════════════════════════════════════════ */
 
 export const ROADS = [
-    {
-        id: 'road-9m-right',
-        label: '9M WIDE LAYOUT ROAD',
-        x: 549, y: 230, width: 45, height: 860,
-        orientation: 'vertical',
-    },
-    {
-        id: 'road-12m-vertical',
-        label: '12M WIDE LAYOUT ROAD',
-        x: 347, y: 279, width: 80, height: 811,
-        orientation: 'vertical',
-    },
+    // Compute slanted top Y of the proposed 60' road so vertical roads align to it
+    // Top edge of proposed 60' road (approx): left (80,1093) -> right (710,1044)
+    // We'll interpolate Y at the vertical road's X and set their heights so they end at that Y.
+    ...(function computeRoads() {
+        // Use the actual top edge of the proposed 60' road as currently defined below
+        // (these values align with the `road-60-bottom` polygon top points in this file)
+        const ROAD60_TOP = { x1: 80, y1: 1121, x2: 710, y2: 1097 };
+        const road60TopYAt = (x) => ROAD60_TOP.y1 + (ROAD60_TOP.y2 - ROAD60_TOP.y1) / (ROAD60_TOP.x2 - ROAD60_TOP.x1) * (x - ROAD60_TOP.x1);
+
+        const right9mX = 549; const right9mY = 230;
+        const vertical12mX = 347; const vertical12mY = 279;
+
+        const right9mHeight = Math.round(road60TopYAt(right9mX) - right9mY);
+        const vertical12mHeight = Math.round(road60TopYAt(vertical12mX) - vertical12mY);
+
+        return [
+            {
+                id: 'road-9m-right',
+                label: '9M WIDE LAYOUT ROAD',
+                x: right9mX, y: right9mY, width: 45, height: right9mHeight,
+                orientation: 'vertical',
+            },
+            {
+                id: 'road-12m-vertical',
+                label: '12M WIDE LAYOUT ROAD',
+                x: vertical12mX, y: vertical12mY, width: 80, height: vertical12mHeight,
+                orientation: 'vertical',
+            },
+        ];
+    })(),
     {
         id: 'road-12m-horizontal',
         label: '12M WIDE LAYOUT ROAD',
@@ -81,7 +99,8 @@ export const ROADS = [
     {
         id: 'road-60-bottom',
         label: 'PROPOSED 60\' M.P. ROAD',
-        x: 80, y: 1090, width: 700, height: 91,
+        points: [[80, 1121], [710, 1097], [710, 1187], [80, 1211]],
+        cx: 390, cy: 1145,
         orientation: 'horizontal',
         style: 'external',
         sublabel: 'EXISTING 60\' ROAD FROM MITTA GANDHIPURAM TO 80\' T.U.D.A ROAD',
@@ -94,14 +113,23 @@ export const ROADS = [
         style: 'external',
         sublabel: 'EXISTING 80\' WIDE ROAD FROM TIRUPATI KARAKAMBARI RTO OFFICE TO TIRUPATI RENIGUNTA ROAD',
     },
-    {
-        id: 'road-9m-left',
-        label: '9M WIDE LAYOUT ROAD',
-        points: [[185, 151], [230, 130], [230, 1090], [185, 1090]],
-        cx: 207.5, // Center for text
-        cy: 620, // Center for text
-        orientation: 'vertical',
-    },
+    (function computeLeft9m() {
+        // Adjust bottom Y of left 9m road so it meets the slanted top of the proposed 60' road
+        // Keep the same ROAD60_TOP values as used above so both left/right interpolation match
+        const ROAD60_TOP = { x1: 80, y1: 1121, x2: 710, y2: 1097 };
+        const road60TopYAt = (x) => ROAD60_TOP.y1 + (ROAD60_TOP.y2 - ROAD60_TOP.y1) / (ROAD60_TOP.x2 - ROAD60_TOP.x1) * (x - ROAD60_TOP.x1);
+        const x0 = 185; const x1 = 230;
+        const y0 = Math.round(road60TopYAt(x0));
+        const y1val = Math.round(road60TopYAt(x1));
+        return {
+            id: 'road-9m-left',
+            label: '9M WIDE LAYOUT ROAD',
+            points: [[185, 151], [230, 130], [230, y1val], [185, y0]],
+            cx: 207.5, // Center for text
+            cy: 620, // Center for text
+            orientation: 'vertical',
+        };
+    })(),
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -122,7 +150,7 @@ export const OPEN_SPACES = [
         id: 'others-land-right',
         label: 'OTHERS LAND',
         areaText: '',
-        points: [[640, 280], [710, 280], [710, 1090], [640, 1090]],
+        points: [[640, 280], [710, 280], [710, 1097], [635, 1100]],
         fill: 'hatch',
     },
     {
@@ -143,37 +171,47 @@ export const OPEN_SPACES = [
 /* ─── Right column (East facing, plots 1–4) ─── */
 const PW = 46; // plot width (30' ≈ 46 SVG units)
 const PH = 57; // plot height
+const PH2 = 43; // aligned with Zone H (43 units)
+const PH3 = 51; // plot height for zone D
+const PH4 = 43; // aligned with Zone H (43 units)
+const PW2 = 60; // wider width for plots 31-61
+const PW3 = 57; // width to cover gap
+const LOWER_START = 551; // just below 12M road
+const ZONE_D_LOWER = 551; // same as lower start
+const ZONE_D_START = 226; // just below OTHERS LAND line
+const ZONE_D_UPPER_X = 549 - PW2; // right edge touches 9M road at x=549
+const ZONE_E_UPPER_X = ZONE_D_UPPER_X - PW2 - 2; // left of new zone D
+const ZONE_E_START = 279; // aligned with plot 30
+const ZONE_F_UPPER_X = 347 - PW2; // road left edge
+const ZONE_F_START = 279; // aligned with plots 32-35
+const ZONE_G_UPPER_X = 230; // matches utility space
+const ZONE_G_START = 279 + PH3 + 2; // below utility space
+const PH5 = 43; // Zone H standard
 
 const rightCol = [
-    { plotNumber: 1, x: 594, y: 230, w: PW, h: 80, lengthFt: 48, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 230], [640, 280], [640, 310], [594, 310]] },
-    { plotNumber: 2, x: 594, y: 312, w: PW, h: PH, lengthFt: 43, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 3, x: 594, y: 312 + PH + 2, w: PW, h: PH, lengthFt: 43, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 4, x: 594, y: 312 + (PH + 2) * 2, w: PW, h: PH, lengthFt: 43, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
+    { plotNumber: 1, x: 594, y: 230, w: PW, h: 100, lengthFt: 48, widthFt: 30, facing: 'West', status: 'sold', shape: 'polygon', points: [[594.2, 230], [640, 280], [639.7, 330], [594, 330]], irregularDimensions: { west: "71'11\"", south: "43'9\"", east: "27'7\"" } },
+    { plotNumber: 2, x: 594, y: 332, w: PW, h: PH3, lengthFt: 43, widthFt: 30, facing: 'West', status: 'reserved', shape: 'polygon', points: [[594, 332], [639.7, 332], [639.3, 383], [594, 383]], irregularDimensions: { west: "30'", east: "30'", south: "43'7\"", north: "43'9\"" } },
+    { plotNumber: 3, x: 594, y: 385, w: PW, h: PH3, lengthFt: 43, widthFt: 30, facing: 'West', status: 'reserved', shape: 'polygon', points: [[594, 385], [639.3, 385], [639, 436], [594, 436]], irregularDimensions: { west: "30'", east: "30'", north: "43'7\"", south: "43'4\"" } },
+    { plotNumber: 4, x: 594, y: 438, w: PW, h: PH3, lengthFt: 43, widthFt: 30, facing: 'West', status: 'reserved', shape: 'polygon', points: [[594, 438], [639, 438], [638.6, 489], [594, 489]], irregularDimensions: { west: "30'", east: "30'", north: "43'4\"", south: "43'2\"" } },
 ];
 
 /* ─── Right column lower (East facing, plots 5–15, below 12M road) ─── */
-const PH2 = 47; // smaller plot height for lower section
-const LOWER_START = 551; // just below 12M road (489+60+2)
 
 const rightColLower = [
-    { plotNumber: 5, x: 594, y: LOWER_START, w: PW, h: PH2, lengthFt: 42, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 6, x: 594, y: LOWER_START + (PH2 + 2), w: PW, h: PH2, lengthFt: 42, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 7, x: 594, y: LOWER_START + (PH2 + 2) * 2, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 8, x: 594, y: LOWER_START + (PH2 + 2) * 3, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 9, x: 594, y: LOWER_START + (PH2 + 2) * 4, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 10, x: 594, y: LOWER_START + (PH2 + 2) * 5, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 11, x: 594, y: LOWER_START + (PH2 + 2) * 6, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 12, x: 594, y: LOWER_START + (PH2 + 2) * 7, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 13, x: 594, y: LOWER_START + (PH2 + 2) * 8, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 14, x: 594, y: LOWER_START + (PH2 + 2) * 9, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 15, x: 594, y: LOWER_START + (PH2 + 2) * 10, w: PW, h: PH2, lengthFt: 45, widthFt: 30, facing: 'East', status: 'available', shape: 'rect' },
+    { plotNumber: 5, x: 594, y: LOWER_START, w: PW, h: PH2, lengthFt: 42, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 551], [638.3, 551], [638.1, 594], [594, 594]] },
+    { plotNumber: 6, x: 594, y: LOWER_START + (PH2 + 2), w: PW, h: PH2, lengthFt: 42, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 596], [638.1, 596], [637.8, 639], [594, 639]] },
+    { plotNumber: 7, x: 594, y: LOWER_START + (PH2 + 2) * 2, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 641], [637.8, 641], [637.5, 684], [594, 684]] },
+    { plotNumber: 8, x: 594, y: LOWER_START + (PH2 + 2) * 3, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 686], [637.5, 686], [637.2, 729], [594, 729]] },
+    { plotNumber: 9, x: 594, y: LOWER_START + (PH2 + 2) * 4, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 731], [637.2, 731], [637, 774], [594, 774]] },
+    { plotNumber: 10, x: 594, y: LOWER_START + (PH2 + 2) * 5, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 776], [637, 776], [636.7, 819], [594, 819]] },
+    { plotNumber: 11, x: 594, y: LOWER_START + (PH2 + 2) * 6, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 821], [636.7, 821], [636.4, 864], [594, 864]] },
+    { plotNumber: 12, x: 594, y: LOWER_START + (PH2 + 2) * 7, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 866], [636.4, 866], [636.1, 909], [594, 909]] },
+    { plotNumber: 13, x: 594, y: LOWER_START + (PH2 + 2) * 8, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 911], [636.1, 911], [635.8, 954], [594, 954]] },
+    { plotNumber: 14, x: 594, y: LOWER_START + (PH2 + 2) * 9, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 956], [635.8, 956], [635.6, 999], [594, 999]] },
+    { plotNumber: 15, x: 594, y: 1001, w: PW, h: 52, lengthFt: 45, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 1001], [635.6, 1001], [635, 1100], [594, 1101.6]] },
 ];
 
 /* ─── Zone D upper (plots 31–27, left of 9M road, above 12M road) ─── */
-const PH3 = 51; // plot height for zone D
-const PW2 = 60; // wider width for plots 31-61
-const ZONE_D_START = 226; // just below OTHERS LAND line
-const ZONE_D_UPPER_X = 549 - PW2; // right edge touches 9M road at x=549 (new x = 489)
 
 const zoneDUpper = [
     { plotNumber: 31, x: ZONE_D_UPPER_X, y: ZONE_D_START, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
@@ -184,9 +222,6 @@ const zoneDUpper = [
 ];
 
 /* ─── Zone D lower (plots 26–16, left of 9M road, below 12M road) ─── */
-const PH4 = 47; // plot height for lower zone D
-const ZONE_D_LOWER = 551; // just below 12M road
-// const ZONE_D_X = 503; // keeping original width for lowercase plots // REMOVED
 
 const zoneDLower = [
     { plotNumber: 26, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
@@ -199,12 +234,10 @@ const zoneDLower = [
     { plotNumber: 19, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
     { plotNumber: 18, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
     { plotNumber: 17, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 16, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 10, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
+    { plotNumber: 16, x: ZONE_D_UPPER_X, y: 1001, w: PW2, h: 60, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'polygon', points: [[489, 1001], [549, 1001], [549, 1103.4], [489, 1105.7]] },
 ];
 
 /* ─── Zone E (plots 32–35, beside plots 30–27, left column) ─── */
-const ZONE_E_UPPER_X = ZONE_D_UPPER_X - PW2 - 2; // left of new zone D
-const ZONE_E_START = 279; // aligned with plot 30
 
 const zoneE = [
     { plotNumber: 32, x: ZONE_E_UPPER_X, y: ZONE_E_START, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
@@ -225,12 +258,10 @@ const zoneELower = [
     { plotNumber: 43, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
     { plotNumber: 44, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
     { plotNumber: 45, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 46, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 10, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
+    { plotNumber: 46, x: ZONE_E_UPPER_X, y: 1001, w: PW2, h: 65, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'polygon', points: [[427, 1001], [487, 1001], [487, 1105.8], [427, 1108.1]] },
 ];
 
 /* ─── Zone F upper (plots 61–58, left of 12M vertical road, above 12M horizontal road) ─── */
-const ZONE_F_UPPER_X = 347 - PW2; // road left edge (347) - PW2
-const ZONE_F_START = 279; // aligned with plots 32-35
 
 const zoneFUpper = [
     { plotNumber: 61, x: ZONE_F_UPPER_X, y: ZONE_F_START, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
@@ -240,9 +271,6 @@ const zoneFUpper = [
 ];
 
 /* ─── Zone G upper (plots 62–64, left of 60-58, below Utility Space) ─── */
-const ZONE_G_UPPER_X = 230; // matches utility space x, left edge of open space
-const PW3 = 57; // width to cover gap (287 - 230 = 57)
-const ZONE_G_START = 279 + PH3 + 2; // below utility space
 
 const zoneGUpper = [
     { plotNumber: 62, x: ZONE_G_UPPER_X, y: ZONE_G_START, w: PW3, h: PH3, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
@@ -262,7 +290,7 @@ const zoneFLower = [
     { plotNumber: 50, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
     { plotNumber: 49, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
     { plotNumber: 48, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 47, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 10, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
+    { plotNumber: 47, x: ZONE_F_UPPER_X, y: 1001, w: PW2, h: 76, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'polygon', points: [[287, 1001], [347, 1001], [347, 1111.2], [287, 1113.5]] },
 ];
 
 /* ─── Zone G lower (plots 65–75, left of 57-47, below 12M horizontal road) ─── */
@@ -277,7 +305,7 @@ const zoneGLower = [
     { plotNumber: 72, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
     { plotNumber: 73, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
     { plotNumber: 74, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 75, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 10, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
+    { plotNumber: 75, x: ZONE_G_UPPER_X, y: 1001, w: PW3, h: 80, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'polygon', points: [[230, 1001], [287, 1001], [287, 1113.5], [230, 1115.7]] },
 ];
 
 /* ─── Zone H lower (plots 87–76, left of 9m road) ─── */
@@ -286,7 +314,6 @@ const zoneGLower = [
 // Slope function: x(y) = 80 + (120-80)/(1090-200) * (y - 200) = 80 + 40/890 * (y - 200)
 const getLeftX = (y) => 80 + (40 / 890) * (y - 200);
 
-const PH5 = 43; // Adjusted height
 const yVals = Array.from({ length: 13 }, (_, i) => ZONE_D_LOWER + i * (PH5 + 2));
 const rightX = 185; // Edge of 9m road
 
@@ -319,14 +346,33 @@ const zoneHLower = [
     createSlantedPlot(79, 8),
     createSlantedPlot(78, 9),
     createSlantedPlot(77, 10),
-    createSlantedPlot(76, 11),
+    {
+        plotNumber: 76,
+        x: 118, y: 1046, w: 67, h: 44,
+        lengthFt: 30, widthFt: 36, facing: 'East', status: 'available',
+        shape: 'polygon',
+        points: [[118, 1046], [185, 1046], [185, 1117.5], [120, 1120]]
+    },
 ];
 
 const rawPlots = [...rightCol, ...rightColLower, ...zoneDUpper, ...zoneDLower, ...zoneE, ...zoneELower, ...zoneFUpper, ...zoneGUpper, ...zoneFLower, ...zoneGLower, ...zoneHLower];
 
 // Enrich with computed area fields
 const plotCoordinates = rawPlots.map((p) => {
-    const area = calculateArea(p.lengthFt, p.widthFt);
+    let area;
+    if (p.irregularDimensions) {
+        const d = p.irregularDimensions;
+        // Default missing sides to their opposites or standard dims (e.g. Plot 1 missing North)
+        const west = d.west || d.east || `${p.lengthFt}'`;
+        const east = d.east || d.west || `${p.lengthFt}'`;
+        const north = d.north || d.south || `${p.widthFt}'`;
+        const south = d.south || d.north || `${p.widthFt}'`;
+
+        area = calculateIrregularArea(west, east, north, south);
+    } else {
+        area = calculateArea(p.lengthFt, p.widthFt);
+    }
+
     return {
         plotNumber: p.plotNumber,
         x: p.x,
@@ -340,6 +386,7 @@ const plotCoordinates = rawPlots.map((p) => {
         status: p.status,
         shape: p.shape,
         points: p.points || null,
+        irregularDimensions: p.irregularDimensions || null,
     };
 });
 

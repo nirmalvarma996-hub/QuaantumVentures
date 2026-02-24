@@ -13,19 +13,22 @@
 const rawPlots = [
     // ── RIGHT COLUMN (East facing, along existing 80' road) ──────────
     // Upper right (above 12M road)
-    { plotNumber: 1, length: 48, width: 30, status: "sold", facing: "East" },
-    { plotNumber: 2, length: 43, width: 30, status: "available", facing: "East" },
-    { plotNumber: 3, length: 43, width: 30, status: "available", facing: "East" },
-    { plotNumber: 4, length: 43, width: 30, status: "sold", facing: "East" },
+    { plotNumber: 1, length: 48, width: 30, status: "sold", facing: "West" },
+    { plotNumber: 2, length: 43, width: 30, status: "reserved", facing: "West" },
+    { plotNumber: 3, length: 43.5, width: 30, status: "reserved", facing: "West" },
+    { plotNumber: 4, length: 43, width: 30, status: "reserved", facing: "West" },
     // Lower right (below 12M road)
-    { plotNumber: 5, length: 42, width: 30, status: "available", facing: "East" },
-    { plotNumber: 6, length: 42, width: 30, status: "available", facing: "East" },
-    { plotNumber: 7, length: 41, width: 30, status: "sold", facing: "East" },
-    { plotNumber: 8, length: 41, width: 30, status: "available", facing: "East" },
-    { plotNumber: 9, length: 41, width: 30, status: "reserved", facing: "East" },
-    { plotNumber: 10, length: 41, width: 30, status: "available", facing: "East" },
-    { plotNumber: 11, length: 40, width: 30, status: "sold", facing: "East" },
-    { plotNumber: 12, length: 40, width: 30, status: "available", facing: "East" },
+    { plotNumber: 5, length: 42, width: 30, status: "available", facing: "West" },
+    { plotNumber: 6, length: 42, width: 30, status: "available", facing: "West" },
+    { plotNumber: 7, length: 41, width: 30, status: "sold", facing: "West" },
+    { plotNumber: 8, length: 41, width: 30, status: "available", facing: "West" },
+    { plotNumber: 9, length: 41, width: 30, status: "reserved", facing: "West" },
+    { plotNumber: 10, length: 41, width: 30, status: "available", facing: "West" },
+    { plotNumber: 11, length: 40, width: 30, status: "sold", facing: "West" },
+    { plotNumber: 12, length: 40, width: 30, status: "available", facing: "West" },
+    { plotNumber: 13, length: 40, width: 30, status: "available", facing: "West" },
+    { plotNumber: 14, length: 40, width: 30, status: "available", facing: "West" },
+    { plotNumber: 15, length: 45, width: 30, status: "available", facing: "West" },
 
     // ── UPPER SECTION (above 12M road) ──────────────────────────────
     // Zone E — between 9M Layout Road and right column

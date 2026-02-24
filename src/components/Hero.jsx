@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FaShieldAlt } from 'react-icons/fa';
+import { FaShieldAlt, FaWhatsapp, FaPhoneAlt } from 'react-icons/fa';
 
 /**
  * Hero Section - Full viewport cinematic hero
@@ -17,28 +17,42 @@ export default function Hero() {
             id="home"
             className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 md:px-8 lg:px-12 py-24 md:py-32"
         >
-            {/* Background with gradient overlay */}
-            <div className="absolute inset-0 z-0">
+            {/* Background with gradient overlay and Balaji Silhouette */}
+            <div className="absolute inset-0 z-0 bg-[#050505]">
+                {/* Dark base to make the gold pop */}
                 <div
                     className="absolute inset-0"
                     style={{
-                        background: 'linear-gradient(135deg, #1A1A1A 0%, #2D1810 30%, #1A1A1A 60%, #0D0D0D 100%)',
+                        background: 'radial-gradient(ellipse at 50% 50%, rgba(20,15,10,0.8) 0%, #050505 100%)',
                     }}
                 />
+
+                {/* Lord Balaji & Tirumala Hills Background Art */}
                 <div
-                    className="absolute inset-0 opacity-[0.05]"
+                    className="absolute inset-0 bg-cover bg-no-repeat opacity-[1] mix-blend-screen"
+                    style={{
+                        backgroundImage: 'url(/images/hero-bg.png)',
+                        backgroundPosition: 'center 45%', // Centers horizontally, pushes further down
+                    }}
+                />
+
+                {/* Subtle pattern overlay */}
+                <div
+                    className="absolute inset-0 opacity-[0.03] mix-blend-screen"
                     style={{
                         backgroundImage: `
               linear-gradient(rgba(198,168,74,0.3) 1px, transparent 1px),
               linear-gradient(90deg, rgba(198,168,74,0.3) 1px, transparent 1px)
             `,
-                        backgroundSize: '60px 60px',
+                        backgroundSize: '80px 80px',
                     }}
                 />
+
+                {/* Text readability vignette shadow behind content center */}
                 <div
-                    className="absolute inset-0"
+                    className="absolute inset-0 pointer-events-none"
                     style={{
-                        background: 'radial-gradient(ellipse at 50% 40%, rgba(198,168,74,0.12) 0%, transparent 70%)',
+                        background: 'radial-gradient(ellipse at 50% 60%, rgba(5,5,5,0.05) 0%, rgba(5,5,5,0.8) 100%)',
                     }}
                 />
             </div>
@@ -120,8 +134,13 @@ export default function Hero() {
                     <a href="#plots" onClick={(e) => handleScroll(e, '#plots')} className="btn-gold w-full sm:w-auto text-center">
                         View Layout
                     </a>
-                    <a href="#contact" onClick={(e) => handleScroll(e, '#contact')} className="btn-outline w-full sm:w-auto text-center">
-                        Request Callback
+                    <a
+                        href="https://wa.me/916301102828?text=Hi%2C%20I%20am%20interested%20in%20Quantamm%20Ventures%20plots%20in%20Tirupati."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-outline w-full sm:w-auto text-center flex items-center justify-center gap-2 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+                    >
+                        <FaWhatsapp className="text-lg" /> WhatsApp Us
                     </a>
                 </motion.div>
 
