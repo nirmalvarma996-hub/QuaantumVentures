@@ -66,13 +66,7 @@ export default function Navbar() {
                             {link.name}
                         </a>
                     ))}
-                    <a
-                        href="#contact"
-                        onClick={(e) => handleNavClick(e, '#contact')}
-                        className="btn-gold !py-2.5 !px-6 !text-sm"
-                    >
-                        Enquire Now
-                    </a>
+
                 </div>
 
                 {/* Mobile Menu Toggle */}
@@ -104,13 +98,7 @@ export default function Navbar() {
                                     {link.name}
                                 </a>
                             ))}
-                            <a
-                                href="#contact"
-                                onClick={(e) => handleNavClick(e, '#contact')}
-                                className="btn-gold text-center mt-2"
-                            >
-                                Enquire Now
-                            </a>
+
                         </div>
                     </motion.div>
                 )}
