@@ -27,9 +27,19 @@ export default function Navbar() {
 
     const handleNavClick = (e, href) => {
         e.preventDefault();
-        setMobileOpen(false);
-        const el = document.querySelector(href);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
+        const isMobile = window.innerWidth < 768;
+
+        if (isMobile) {
+            setMobileOpen(false);
+            // Small timeout to let the menu close smoothly before scrolling
+            setTimeout(() => {
+                const el = document.querySelector(href);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        } else {
+            const el = document.querySelector(href);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
     };
 
     return (

@@ -47,21 +47,51 @@ export default function InteractivePlotMap() {
 
     const zoomLevel = Math.round((DEFAULT_VB.w / viewBox.w) * 100);
 
-    /* ── Pan via mouse drag ── */
-    const onMouseDown = (e) => {
-        if (e.button !== 0) return;
-        setIsPanning(true);
-        setPanStart({ x: e.clientX, y: e.clientY, vb: { ...viewBox } });
+    /* ── Pan via pointer drag ── */
+    const onPointerDown = (e) => {
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
+        setIsPanning(false); // Reset to false, will become true if moved past threshold
+        setPanStart({
+            x: e.clientX,
+            y: e.clientY,
+            vb: { ...viewBox },
+            hasMoved: false
+        });
+        e.currentTarget.setPointerCapture(e.pointerId);
     };
-    const onMouseMove = useCallback((e) => {
-        if (!isPanning || !panStart) return;
+
+    const onPointerMove = useCallback((e) => {
+        if (!panStart) return;
+
+        const dx_raw = panStart.x - e.clientX;
+        const dy_raw = panStart.y - e.clientY;
+
+        // Threshold of 5px to distinguish between click/tap and pan
+        if (!panStart.hasMoved && Math.sqrt(dx_raw * dx_raw + dy_raw * dy_raw) > 5) {
+            setIsPanning(true);
+            setPanStart(prev => ({ ...prev, hasMoved: true }));
+        }
+
+        if (!panStart.hasMoved) return;
+
         const rect = containerRef.current?.getBoundingClientRect();
         if (!rect) return;
-        const dx = (panStart.x - e.clientX) * (viewBox.w / rect.width);
-        const dy = (panStart.y - e.clientY) * (viewBox.h / rect.height);
-        setViewBox({ ...panStart.vb, x: panStart.vb.x + dx, y: panStart.vb.y + dy });
-    }, [isPanning, panStart, viewBox.w, viewBox.h]);
-    const onMouseUp = () => { setIsPanning(false); setPanStart(null); };
+
+        const dx = dx_raw * (viewBox.w / rect.width);
+        const dy = dy_raw * (viewBox.h / rect.height);
+
+        setViewBox({
+            ...panStart.vb,
+            x: panStart.vb.x + dx,
+            y: panStart.vb.y + dy
+        });
+    }, [panStart, viewBox.w, viewBox.h]);
+
+    const onPointerUp = (e) => {
+        setIsPanning(false);
+        setPanStart(null);
+        e.currentTarget.releasePointerCapture(e.pointerId);
+    };
 
     /* ── Scroll zoom ── */
     const onWheel = useCallback((e) => {
@@ -174,11 +204,14 @@ export default function InteractivePlotMap() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.7, delay: 0.3 }}
                     className="relative bg-gradient-to-br from-charcoal to-charcoal-light rounded-2xl border border-gold/20 shadow-2xl overflow-hidden"
-                    style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
-                    onMouseDown={onMouseDown}
-                    onMouseMove={onMouseMove}
-                    onMouseUp={onMouseUp}
-                    onMouseLeave={onMouseUp}
+                    style={{
+                        cursor: isPanning ? 'grabbing' : 'grab',
+                        touchAction: 'none'
+                    }}
+                    onPointerDown={onPointerDown}
+                    onPointerMove={onPointerMove}
+                    onPointerUp={onPointerUp}
+                    onPointerCancel={onPointerUp}
                     onClick={handleLeave}
                 >
                     <svg

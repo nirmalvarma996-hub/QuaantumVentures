@@ -7,7 +7,7 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-charcoal border-t border-gold/10">
+        <footer id="contact" className="bg-charcoal border-t border-gold/10">
             <div className="max-w-7xl mx-auto px-6 py-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* Brand */}
@@ -33,13 +33,20 @@ export default function Footer() {
                     <div>
                         <h4 className="text-gold font-heading text-lg font-semibold mb-6">Quick Links</h4>
                         <ul className="space-y-3">
-                            {['Home', 'Location', 'Plot Layout', 'Highlights', 'About', 'Contact'].map((link) => (
-                                <li key={link}>
+                            {[
+                                { name: 'Home', id: 'home' },
+                                { name: 'Location', id: 'location' },
+                                { name: 'Plot Layout', id: 'plots' },
+                                { name: 'Highlights', id: 'highlights' },
+                                { name: 'About', id: 'about' },
+                                { name: 'Contact', id: 'contact' },
+                            ].map((link) => (
+                                <li key={link.name}>
                                     <a
-                                        href={`#${link.toLowerCase().replace(' ', '-')}`}
+                                        href={`#${link.id}`}
                                         className="text-ivory/40 hover:text-gold text-sm transition-colors no-underline"
                                     >
-                                        {link}
+                                        {link.name}
                                     </a>
                                 </li>
                             ))}
