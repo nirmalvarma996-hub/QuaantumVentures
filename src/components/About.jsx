@@ -38,7 +38,7 @@ export default function About() {
                     className="mt-10 sm:mt-12 bg-gradient-to-br from-charcoal to-charcoal-light rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-16 text-center shadow-2xl border border-gold/10"
                 >
                     <p className="text-ivory/80 text-base sm:text-lg md:text-xl leading-relaxed font-light max-w-3xl mx-auto">
-                        <span className="text-gold font-heading text-xl sm:text-2xl md:text-3xl font-bold block mb-6 uppercase tracking-[4px] sm:tracking-[6px] whitespace-nowrap">
+                        <span className="text-gold font-heading text-xl sm:text-2xl md:text-3xl font-bold block mb-6 uppercase tracking-[2px] sm:tracking-[4px] md:tracking-[6px] transition-all duration-300">
                             CRAFTING TRUST. BUILDING LEGACIES.
                         </span>
                         Quaantumm Ventures is committed to building premium real estate assets in high-growth
