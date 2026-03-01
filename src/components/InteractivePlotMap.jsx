@@ -30,14 +30,19 @@ export default function InteractivePlotMap() {
 
     /* ── Zoom via viewBox ── */
     const zoomIn = useCallback(() => setViewBox((vb) => {
-        const nw = vb.w * 0.8, nh = vb.h * 0.8;
+        // Limit max zoom to 100% (where viewBox width equals DEFAULT_VB.w)
+        const nw = Math.max(vb.w * 0.8, DEFAULT_VB.w);
+        const nh = Math.max(vb.h * 0.8, DEFAULT_VB.h);
         return { x: vb.x + (vb.w - nw) / 2, y: vb.y + (vb.h - nh) / 2, w: nw, h: nh };
     }), []);
+
     const zoomOut = useCallback(() => setViewBox((vb) => {
-        const nw = Math.min(vb.w * 1.25, DEFAULT_VB.w * 1.5);
-        const nh = Math.min(vb.h * 1.25, DEFAULT_VB.h * 1.5);
+        // Limit min zoom to approx 50% (where viewBox width is 2x DEFAULT_VB.w)
+        const nw = Math.min(vb.w * 1.25, DEFAULT_VB.w * 2);
+        const nh = Math.min(vb.h * 1.25, DEFAULT_VB.h * 2);
         return { x: vb.x - (nw - vb.w) / 2, y: vb.y - (nh - vb.h) / 2, w: nw, h: nh };
     }), []);
+
     const resetView = useCallback(() => setViewBox(DEFAULT_VB), []);
 
     const zoomLevel = Math.round((DEFAULT_VB.w / viewBox.w) * 100);
