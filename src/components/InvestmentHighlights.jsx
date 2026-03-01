@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FaFileContract, FaChartLine, FaGem, FaPrayingHands, FaRoad } from 'react-icons/fa';
+import { FaFileContract, FaChartLine, FaGem, FaPrayingHands, FaRoad, FaTrain } from 'react-icons/fa';
 
 /**
  * Investment Highlights Section
@@ -27,8 +27,13 @@ const highlights = [
     },
     {
         icon: FaRoad,
-        title: '150 ft Main Road Connectivity',
-        description: 'Direct frontage on the widest road — unmatched visibility',
+        title: 'Steps Away from 150 ft Road',
+        description: 'Just one plot away from the widest road corridor — enjoy premium connectivity without the noise',
+    },
+    {
+        icon: FaTrain,
+        title: 'Near Existing Tiruchanoor Station',
+        description: 'Strategic proximity to major rail infrastructure for enhanced long-distance connectivity',
     },
 ];
 

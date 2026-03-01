@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 /**
  * PageLoader - Premium gold shimmer loading animation
- * Displays on initial page load with Quantamm branding
+ * Displays on initial page load with quaantumm branding
  */
 export default function PageLoader() {
     const [loading, setLoading] = useState(true);
@@ -43,7 +43,7 @@ export default function PageLoader() {
                             }}
                         />
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-gold font-heading text-2xl font-bold">Q</span>
+                            <span className="text-gold font-heading text-xl font-bold tracking-tighter">QV</span>
                         </div>
                     </motion.div>
 
@@ -55,7 +55,7 @@ export default function PageLoader() {
                         className="text-center"
                     >
                         <span className="text-gold font-heading text-2xl font-bold tracking-wider">
-                            Quantamm Ventures
+                            Quaantumm Ventures
                         </span>
                         <div className="mt-3 h-0.5 w-48 mx-auto gold-shimmer rounded-full" />
                     </motion.div>

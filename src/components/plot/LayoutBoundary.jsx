@@ -50,21 +50,21 @@ export default function LayoutBoundary({ boundaryPoints }) {
             <line x1="490" y1="225" x2="549" y2="224" stroke="#C6A84A" strokeWidth="2" opacity="0.7" />
 
             {/* From left slope → vertical down → horizontal to plot 31 */}
-            <line x1="230" y1="130" x2="230" y2="277" stroke="#C6A84A" strokeWidth="2" opacity="0.7" />
-            <line x1="230" y1="277" x2="489" y2="277" stroke="#C6A84A" strokeWidth="2" opacity="0.7" />
+            <line x1="220" y1="134" x2="220" y2="277" stroke="#C6A84A" strokeWidth="2" opacity="0.7" />
+            <line x1="220" y1="277" x2="489" y2="277" stroke="#C6A84A" strokeWidth="2" opacity="0.7" />
 
             {/* PUBLIC OPEN SPACE fill */}
             <polygon
-                points="230,130 284,104 330,115 320,200 490,225 489,226 489,277 230,277"
+                points="220,134 284,104 330,115 320,200 490,225 489,226 489,277 220,277"
                 fill="#1A3A2A"
                 opacity="0.35"
             />
             <polygon
-                points="230,130 284,104 330,115 320,200 490,225 489,226 489,277 230,277"
+                points="220,134 284,104 330,115 320,200 490,225 489,226 489,277 220,277"
                 fill="url(#pat-dots)"
                 opacity="0.3"
             />
-            <text x="360" y="250" fill="#6BCB77" fontSize="10" fontWeight="600" textAnchor="middle" opacity="0.8">
+            <text x="355" y="250" fill="#6BCB77" fontSize="10" fontWeight="600" textAnchor="middle" opacity="0.8">
                 PUBLIC OPEN SPACE
             </text>
 

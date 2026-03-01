@@ -9,7 +9,7 @@ const faqs = [
     {
         question: 'What is the total area of the project?',
         answer:
-            'The Quantamm Ventures plotting project spans 6.5 acres of premium land, strategically located opposite the RTO Office on a 150 ft main road in Tirupati.',
+            'The quaantumm Ventures plotting project spans 6.5 acres of premium land, strategically located opposite the RTO Office on a 150 ft main road in Tirupati.',
     },
     {
         question: 'Are the titles clear and verified?',
@@ -19,7 +19,7 @@ const faqs = [
     {
         question: 'What are the plot sizes available?',
         answer:
-            'We offer a range of plot sizes from 1,200 sq.ft to 2,400 sq.ft to suit different investment needs. Each plot is designed to maximize utility and value.',
+            'We offer a range of plot sizes from 1,300 sq.ft to 5,300 sq.ft to suit different investment needs. Each plot is designed to maximize utility and value.',
     },
     {
         question: 'Is there a gated community?',
@@ -29,7 +29,7 @@ const faqs = [
     {
         question: 'What is the expected appreciation?',
         answer:
-            "With the upcoming IT Hub, proposed Government offices, and proximity to Tirumala, this area is in Tirupati's prime growth corridor with high appreciation potential in the coming years.",
+            "With the proximity to the existing Tiruchanoor Railway Station and Tirumala, combined with upcoming developments like the IT Hub and proposed Government offices, this area is in Tirupati's prime growth corridor with high appreciation potential.",
     },
     {
         question: 'Can NRIs invest in this project?',

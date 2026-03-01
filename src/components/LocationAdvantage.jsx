@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FaRoad, FaBuilding, FaTrain, FaLaptopCode, FaLandmark } from 'react-icons/fa';
+import { FaRoad, FaBuilding, FaTrain, FaLaptopCode, FaLandmark, FaMapMarkerAlt } from 'react-icons/fa';
 
 /**
  * Location Advantage Section - Highlights proximity to key landmarks
@@ -149,10 +149,14 @@ export default function LocationAdvantage() {
                 >
                     <div className="text-center md:text-left">
                         <h3 className="font-heading text-2xl font-bold text-ivory mb-2">Detailed Site Map</h3>
-                        <p className="text-ivory/60">View the exact location and site boundaries on Google Maps.</p>
+                        <p className="text-ivory/60 mb-4">View the exact location and site boundaries on Google Maps.</p>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gold/10 border border-gold/20">
+                            <FaMapMarkerAlt className="text-gold" />
+                            <span className="text-gold font-mono text-sm tracking-widest">13.641033, 79.463829</span>
+                        </div>
                     </div>
                     <a
-                        href="https://maps.app.goo.gl/" // Placeholder for actual plot location
+                        href="https://www.google.com/maps/search/?api=1&query=13.641033,79.463829"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn-gold whitespace-nowrap"

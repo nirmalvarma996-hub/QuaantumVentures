@@ -15,10 +15,26 @@ export default function Plot({ plot, isHovered, onHover, onMove, onLeave }) {
         <motion.g
             whileHover={{ scale: 1.04 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            style={{ transformOrigin: `${cx}px ${cy}px`, cursor: 'pointer' }}
-            onMouseEnter={(e) => onHover(plot, e)}
-            onMouseMove={(e) => onMove(plot, e)}
-            onMouseLeave={onLeave}
+            style={{ transformOrigin: `${cx}px ${cy}px`, cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}
+            onMouseEnter={(e) => {
+                if (window.matchMedia('(hover: hover)').matches) onHover(plot, e);
+            }}
+            onMouseMove={(e) => {
+                if (window.matchMedia('(hover: hover)').matches) onMove(plot, e);
+            }}
+            onMouseLeave={() => {
+                if (window.matchMedia('(hover: hover)').matches) onLeave();
+            }}
+            onClick={(e) => {
+                e.stopPropagation();
+                // On touch devices, click opens the tooltip
+                if (!window.matchMedia('(hover: hover)').matches) {
+                    onHover(plot, e);
+                } else {
+                    // Desktop can also ensure tooltip shows on click
+                    onHover(plot, e);
+                }
+            }}
         >
             {/* Glow filter for available plots */}
             {plot.status === 'available' && (

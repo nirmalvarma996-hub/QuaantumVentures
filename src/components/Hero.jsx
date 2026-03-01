@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FaShieldAlt, FaWhatsapp, FaPhoneAlt } from 'react-icons/fa';
+import { FaShieldAlt, FaMapMarkerAlt, FaPhoneAlt, FaMap } from 'react-icons/fa';
 
 /**
  * Hero Section - Full viewport cinematic hero
@@ -20,21 +20,22 @@ export default function Hero() {
             {/* Background with gradient overlay and Balaji Silhouette */}
             <div className="absolute inset-0 z-0 bg-[#050505]">
                 {/* Dark base to make the gold pop */}
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        background: 'radial-gradient(ellipse at 50% 50%, rgba(20,15,10,0.8) 0%, #050505 100%)',
-                    }}
-                />
+
 
                 {/* Lord Balaji & Tirumala Hills Background Art */}
                 <div
-                    className="absolute inset-0 bg-cover bg-no-repeat opacity-[1] mix-blend-screen"
+                    className="absolute inset-0 bg-cover bg-no-repeat opacity-[0.65]"
                     style={{
                         backgroundImage: 'url(/images/hero-bg.png)',
-                        backgroundPosition: 'center 45%', // Centers horizontally, pushes further down
+                        backgroundPosition: 'var(--hero-bg-pos, center 20%)',
                     }}
                 />
+                <style dangerouslySetInnerHTML={{
+                    __html: `
+                    @media (max-width: 768px) {
+                        :root { --hero-bg-pos: 30% 20%; }
+                    }
+                `}} />
 
                 {/* Subtle pattern overlay */}
                 <div
@@ -52,7 +53,7 @@ export default function Hero() {
                 <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
-                        background: 'radial-gradient(ellipse at 50% 60%, rgba(5,5,5,0.05) 0%, rgba(5,5,5,0.8) 100%)',
+                        background: 'radial-gradient(ellipse at 50% 60%, rgba(5,5,5,0.0) 0%, rgba(5,5,5,0.4) 100%)',
                     }}
                 />
             </div>
@@ -119,7 +120,7 @@ export default function Hero() {
                     transition={{ duration: 0.8, delay: 0.7 }}
                     className="text-ivory/60 text-base sm:text-lg md:text-xl font-light max-w-3xl mx-auto mb-10 leading-relaxed px-4"
                 >
-                    Premium 6.5 Acre Gated Plotting Community by <span className="text-gold font-medium">Quantamm Ventures</span>
+                    Premium 6.5 Acre Gated Plotting Community by <span className="text-gold font-medium">Quaantumm Ventures</span>
                     <br />
                     — Where tradition meets modern investment.
                 </motion.p>
@@ -131,16 +132,16 @@ export default function Hero() {
                     transition={{ duration: 0.8, delay: 0.9 }}
                     className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4"
                 >
-                    <a href="#plots" onClick={(e) => handleScroll(e, '#plots')} className="btn-gold w-full sm:w-auto text-center">
-                        View Layout
+                    <a href="#plots" onClick={(e) => handleScroll(e, '#plots')} className="btn-gold w-full sm:w-auto text-center flex items-center justify-center gap-2">
+                        <FaMap className="text-lg" /> View Layout
                     </a>
                     <a
-                        href="https://wa.me/916301102828?text=Hi%2C%20I%20am%20interested%20in%20Quantamm%20Ventures%20plots%20in%20Tirupati."
+                        href="https://www.google.com/maps/search/?api=1&query=13.641033,79.463829"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-outline w-full sm:w-auto text-center flex items-center justify-center gap-2 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+                        className="btn-outline w-full sm:w-auto text-center flex items-center justify-center gap-2 border-gold/30 text-gold hover:bg-gold/10"
                     >
-                        <FaWhatsapp className="text-lg" /> WhatsApp Us
+                        <FaMapMarkerAlt className="text-lg" />  Show Location
                     </a>
                 </motion.div>
 

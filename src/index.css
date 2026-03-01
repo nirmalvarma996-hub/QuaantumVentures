@@ -97,12 +97,12 @@ h6 {
 /* ========== BALAJI MOTIF WATERMARK ========== */
 .balaji-watermark {
   position: fixed;
-  top: 50%;
+  top: 70%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 600px;
   height: 600px;
-  opacity: 0.02;
+  opacity: 0.03;
   pointer-events: none;
   z-index: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='90' fill='none' stroke='%23C6A84A' stroke-width='2'/%3E%3Ccircle cx='100' cy='100' r='80' fill='none' stroke='%23C6A84A' stroke-width='1'/%3E%3Cpath d='M100 20 L120 60 L100 50 L80 60 Z' fill='%23C6A84A'/%3E%3Ccircle cx='100' cy='85' r='25' fill='none' stroke='%23C6A84A' stroke-width='1.5'/%3E%3Cpath d='M60 120 Q100 160 140 120' fill='none' stroke='%23C6A84A' stroke-width='1.5'/%3E%3Cpath d='M70 140 Q100 170 130 140' fill='none' stroke='%23C6A84A' stroke-width='1'/%3E%3C/svg%3E");
@@ -114,6 +114,7 @@ h6 {
 .btn-gold {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 14px 32px;
   background: linear-gradient(135deg, var(--color-gold), var(--color-gold-dark));
@@ -137,6 +138,7 @@ h6 {
 .btn-outline {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 14px 32px;
   background: transparent;

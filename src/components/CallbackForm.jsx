@@ -70,7 +70,7 @@ export default function CallbackForm() {
                                 <FaPhoneAlt /> Call Now
                             </a>
                             <a
-                                href="https://wa.me/916301102828?text=Hi%2C%20I%20am%20interested%20in%20Quantamm%20Ventures%20plots%20in%20Tirupati."
+                                href="https://wa.me/916301102828?text=Hi%2C%20I%20am%20interested%20in%20quaantum%20Ventures%20plots%20in%20Tirupati."
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="btn-outline flex-1 flex items-center justify-center gap-2 text-lg py-4 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"

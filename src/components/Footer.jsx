@@ -14,10 +14,10 @@ export default function Footer() {
                     <div>
                         <div className="flex items-center gap-3 mb-6">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center">
-                                <span className="text-charcoal font-bold text-lg font-heading">Q</span>
+                                <span className="text-charcoal font-bold text-sm font-heading tracking-tighter">QV</span>
                             </div>
                             <div>
-                                <span className="text-gold font-heading font-bold text-xl">Quantamm</span>
+                                <span className="text-gold font-heading font-bold text-xl">Quaantumm</span>
                                 <span className="block text-[10px] text-gold-light/70 tracking-[3px] uppercase -mt-1">
                                     Ventures
                                 </span>
@@ -54,18 +54,22 @@ export default function Footer() {
                                 <FaPhone className="text-gold/60" />
                                 +91 63011 02828
                             </a>
-                            <a href="mailto:info@quantammventures.com" className="flex items-center gap-3 text-ivory/40 hover:text-gold text-sm transition-colors no-underline">
-                                <FaEnvelope className="text-gold/60" />
-                                info@quantammventures.com
-                            </a>
-                            <div className="flex items-start gap-3 text-ivory/40 text-sm">
-                                <FaMapMarkerAlt className="text-gold/60 mt-0.5 flex-shrink-0" />
+
+                            <a
+                                href="https://maps.google.com/maps?q=13.641033,79.463829"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-start gap-3 text-ivory/40 hover:text-gold text-sm transition-colors no-underline group"
+                            >
+                                <FaMapMarkerAlt className="text-gold/60 mt-0.5 flex-shrink-0 group-hover:text-gold" />
                                 <span>
                                     Opposite RTO Office, 150 ft Main Road,
                                     <br />
                                     Tirupati, Andhra Pradesh
+                                    <br />
+
                                 </span>
-                            </div>
+                            </a>
                         </div>
                     </div>
 
@@ -74,8 +78,8 @@ export default function Footer() {
                         <h4 className="text-gold font-heading text-lg font-semibold mb-6">Location</h4>
                         <div className="rounded-xl overflow-hidden border border-gold/10 h-40">
                             <iframe
-                                title="Quantamm Ventures Location"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15449.099553244935!2d79.39!3d13.63!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bb270baff55555%3A0x0!2sTirupati!5e0!3m2!1sen!2sin!4v1600000000000"
+                                title="quaantumm Ventures Location"
+                                src="https://maps.google.com/maps?q=13.641033,79.463829&z=15&output=embed"
                                 width="100%"
                                 height="100%"
                                 style={{ border: 0 }}
@@ -90,7 +94,7 @@ export default function Footer() {
                 {/* Social links + Copyright */}
                 <div className="mt-12 pt-8 border-t border-gold/10 flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-ivory/30 text-sm">
-                        © {currentYear} Quantamm Ventures. All rights reserved.
+                        © {currentYear} Quaantumm Ventures. All rights reserved.
                     </p>
                     <div className="flex items-center gap-4">
                         {/* Social links removed as requested */}

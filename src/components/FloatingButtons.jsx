@@ -8,7 +8,7 @@ export default function FloatingButtons() {
         <>
             {/* WhatsApp */}
             <a
-                href="https://wa.me/916301102828?text=Hi%2C%20I%20am%20interested%20in%20Quantamm%20Ventures%20plots%20in%20Tirupati."
+                href="https://wa.me/916301102828?text=Hi%2C%20I%20am%20interested%20in%20quaantum%20Ventures%20plots%20in%20Tirupati."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="floating-whatsapp"

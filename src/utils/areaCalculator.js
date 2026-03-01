@@ -47,7 +47,7 @@ export const calculateIrregularArea = (westStr, eastStr, northStr, southStr) => 
     return {
         sqft: Math.round(sqft),
         ankanams: +(sqft / 36).toFixed(2),
-        cents: +(sqft / 435.6).toFixed(2),
+        sqYards: +(sqft / 9).toFixed(2),
     };
 };
 
@@ -57,7 +57,7 @@ export const calculateArea = (lengthFt, widthFt) => {
     return {
         sqft,
         ankanams: +(sqft / 36).toFixed(2),
-        cents: +(sqft / 435.6).toFixed(2),
+        sqYards: +(sqft / 9).toFixed(2),
     };
 };
 

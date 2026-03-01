@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import plotCoordinates, { BOUNDARY_POINTS, ROADS, OPEN_SPACES } from '../data/plotCoordinates';
 import Plot from './plot/Plot';
@@ -29,16 +29,16 @@ export default function InteractivePlotMap() {
     const containerRef = useRef(null);
 
     /* ── Zoom via viewBox ── */
-    const zoomIn = () => setViewBox((vb) => {
+    const zoomIn = useCallback(() => setViewBox((vb) => {
         const nw = vb.w * 0.8, nh = vb.h * 0.8;
         return { x: vb.x + (vb.w - nw) / 2, y: vb.y + (vb.h - nh) / 2, w: nw, h: nh };
-    });
-    const zoomOut = () => setViewBox((vb) => {
+    }), []);
+    const zoomOut = useCallback(() => setViewBox((vb) => {
         const nw = Math.min(vb.w * 1.25, DEFAULT_VB.w * 1.5);
         const nh = Math.min(vb.h * 1.25, DEFAULT_VB.h * 1.5);
         return { x: vb.x - (nw - vb.w) / 2, y: vb.y - (nh - vb.h) / 2, w: nw, h: nh };
-    });
-    const resetView = () => setViewBox(DEFAULT_VB);
+    }), []);
+    const resetView = useCallback(() => setViewBox(DEFAULT_VB), []);
 
     const zoomLevel = Math.round((DEFAULT_VB.w / viewBox.w) * 100);
 
@@ -59,10 +59,22 @@ export default function InteractivePlotMap() {
     const onMouseUp = () => { setIsPanning(false); setPanStart(null); };
 
     /* ── Scroll zoom ── */
-    const onWheel = (e) => {
+    const onWheel = useCallback((e) => {
         e.preventDefault();
         if (e.deltaY < 0) zoomIn(); else zoomOut();
-    };
+    }, [zoomIn, zoomOut]);
+
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        // Attach native wheel event with passive: false to allow e.preventDefault()
+        container.addEventListener('wheel', onWheel, { passive: false });
+
+        return () => {
+            container.removeEventListener('wheel', onWheel);
+        };
+    }, [onWheel]);
 
     /* ── Plot hover ── */
     const handleHover = (plot, e) => {
@@ -118,28 +130,8 @@ export default function InteractivePlotMap() {
                     </p>
                 </motion.div>
 
-                {/* Reference note + Download PDF */}
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.15 }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mb-6 px-4"
-                >
-                    <p className="text-charcoal/40 text-xs sm:text-sm italic text-center">
-                        📐 This layout is an indicative representation for your convenience. For TUDA-approved dimensions &amp; exact plot measurements, please download the official drawing.
-                    </p>
-                    <a
-                        href="/layout-drawing.pdf"
-                        download
-                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gold/90 hover:bg-gold text-charcoal font-semibold text-sm rounded-lg shadow-md hover:shadow-lg transition-all duration-300 whitespace-nowrap"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Download PDF
-                    </a>
-                </motion.div>
+
+
 
                 {/* Legend + Controls */}
                 <motion.div
@@ -153,7 +145,7 @@ export default function InteractivePlotMap() {
                         {[
                             { color: '#1E3A2F', border: '#2D5A47', label: `Available (${available})` },
                             { color: '#8B2E2D', border: '#6A1B1A', label: `Sold (${sold})` },
-                            { color: '#5A4A20', border: '#C6A84A', label: `Reserved (${reserved})` },
+
                         ].map((item) => (
                             <div key={item.label} className="flex items-center gap-2">
                                 <div className="w-4 h-4 rounded-sm border" style={{ backgroundColor: item.color, borderColor: item.border }} />
@@ -182,7 +174,7 @@ export default function InteractivePlotMap() {
                     onMouseMove={onMouseMove}
                     onMouseUp={onMouseUp}
                     onMouseLeave={onMouseUp}
-                    onWheel={onWheel}
+                    onClick={handleLeave}
                 >
                     <svg
                         viewBox={vb}
@@ -233,11 +225,11 @@ export default function InteractivePlotMap() {
                                 className="absolute z-50 pointer-events-none"
                                 style={{ left: tooltipPos.x + 16, top: tooltipPos.y - 10 }}
                             >
-                                <div className="bg-charcoal/95 backdrop-blur-md border border-gold/30 rounded-xl px-4 py-3 shadow-2xl min-w-[210px]">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-gold font-heading font-bold text-base">Plot #{hoveredPlot.plotNumber}</span>
+                                <div className="bg-charcoal/95 backdrop-blur-md border border-gold/30 rounded sm:rounded-xl p-1 sm:px-4 sm:py-3 shadow-2xl w-max sm:min-w-[210px]">
+                                    <div className="flex items-center justify-between gap-2 sm:gap-4 mb-0.5 sm:mb-2">
+                                        <span className="text-gold font-heading font-bold text-[8px] sm:text-base">Plot #{hoveredPlot.plotNumber}</span>
                                         <span
-                                            className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                                            className="text-[6px] sm:text-xs font-semibold px-0.5 py-0.5 rounded-full"
                                             style={{
                                                 backgroundColor: STATUS_BADGE[hoveredPlot.status].bg,
                                                 color: STATUS_BADGE[hoveredPlot.status].text,
@@ -247,26 +239,26 @@ export default function InteractivePlotMap() {
                                             {getStatusLabel(hoveredPlot.status)}
                                         </span>
                                     </div>
-                                    <div className="space-y-1 text-sm">
-                                        <div className="flex justify-between border-b border-gold/10 pb-1 mb-1">
+                                    <div className="space-y-px sm:space-y-1 text-[7px] sm:text-sm">
+                                        <div className="flex justify-between border-b border-gold/10 pb-px sm:pb-1 mb-px sm:mb-1 gap-2">
                                             <span className="text-ivory/60 font-medium">Facing</span>
-                                            <span className="text-ivory font-bold">{hoveredPlot.facing}</span>
+                                            <span className="text-ivory font-bold">{hoveredPlot.facing} facing</span>
                                         </div>
                                         {hoveredPlot.irregularDimensions ? (
                                             <>
-                                                <div className="flex justify-between border-b border-gold/10 pb-1 mb-1 mt-2">
-                                                    <span className="text-gold/80 font-semibold text-xs tracking-wider uppercase">Site Measures</span>
+                                                <div className="flex justify-between border-b border-gold/10 pb-px mb-px mt-0.5 sm:mt-2">
+                                                    <span className="text-gold/80 font-semibold text-[6px] sm:text-xs tracking-wider uppercase">Site Measures</span>
                                                 </div>
                                                 {[
-                                                    ['West Side', hoveredPlot.irregularDimensions.west],
-                                                    ['East Side', hoveredPlot.irregularDimensions.east],
-                                                    ['North Side', hoveredPlot.irregularDimensions.north],
-                                                    ['South Side', hoveredPlot.irregularDimensions.south],
+                                                    ['West', hoveredPlot.irregularDimensions.west],
+                                                    ['East', hoveredPlot.irregularDimensions.east],
+                                                    ['North', hoveredPlot.irregularDimensions.north],
+                                                    ['South', hoveredPlot.irregularDimensions.south],
                                                     ['Area', `${hoveredPlot.sqft} sq.ft`],
                                                     ['Ankanams', `${hoveredPlot.ankanams}`],
-                                                    ['Cents', `${hoveredPlot.cents}`],
+                                                    ['Sq. Yards', `${hoveredPlot.sqYards}`],
                                                 ].filter(([_, val]) => val).map(([label, value]) => (
-                                                    <div key={label} className="flex justify-between">
+                                                    <div key={label} className="flex justify-between items-center gap-2">
                                                         <span className="text-ivory/60 font-medium">{label}</span>
                                                         <span className="text-ivory font-bold">{value}</span>
                                                     </div>
@@ -277,9 +269,9 @@ export default function InteractivePlotMap() {
                                                 ['Dimensions', `${hoveredPlot.lengthFt}′ × ${hoveredPlot.widthFt}′`],
                                                 ['Area', `${hoveredPlot.sqft} sq.ft`],
                                                 ['Ankanams', hoveredPlot.ankanams],
-                                                ['Cents', hoveredPlot.cents],
+                                                ['Sq. Yards', hoveredPlot.sqYards],
                                             ].map(([label, value]) => (
-                                                <div key={label} className="flex justify-between">
+                                                <div key={label} className="flex justify-between items-center gap-2">
                                                     <span className="text-ivory/60 font-medium">{label}</span>
                                                     <span className="text-ivory font-bold">{value}</span>
                                                 </div>
@@ -303,7 +295,7 @@ export default function InteractivePlotMap() {
                     {[
                         { label: 'Available', count: available, color: '#2D5A47' },
                         { label: 'Sold', count: sold, color: '#8B2E2D' },
-                        { label: 'Reserved', count: reserved, color: '#C6A84A' },
+
                     ].map((stat) => (
                         <div
                             key={stat.label}

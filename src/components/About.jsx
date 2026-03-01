@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 
 /**
- * About Quantamm Ventures Section
+ * About quaantumm Ventures Section
  */
 export default function About() {
     return (
@@ -22,7 +22,7 @@ export default function About() {
                         About Us
                     </span>
                     <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-charcoal mt-4 mb-6">
-                        Quantamm{' '}
+                        Quaantumm{' '}
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-dark to-gold">
                             Ventures
                         </span>
@@ -38,10 +38,10 @@ export default function About() {
                     className="mt-10 sm:mt-12 bg-gradient-to-br from-charcoal to-charcoal-light rounded-2xl sm:rounded-3xl p-6 sm:p-10 md:p-16 text-center shadow-2xl border border-gold/10"
                 >
                     <p className="text-ivory/80 text-base sm:text-lg md:text-xl leading-relaxed font-light max-w-3xl mx-auto">
-                        <span className="text-gold font-heading text-2xl md:text-3xl font-bold block mb-6">
-                            &ldquo;Building Legacies, One Plot at a Time&rdquo;
+                        <span className="text-gold font-heading text-xl sm:text-2xl md:text-3xl font-bold block mb-6 uppercase tracking-[4px] sm:tracking-[6px] whitespace-nowrap">
+                            CRAFTING TRUST. BUILDING LEGACIES.
                         </span>
-                        Quantamm Ventures is committed to building premium real estate assets in high-growth
+                        Quaantumm Ventures is committed to building premium real estate assets in high-growth
                         corridors of Tirupati, offering{' '}
                         <span className="text-gold font-medium">trust, transparency, and long-term value</span>.
                         With a vision rooted in integrity and a deep understanding of Indian real estate,
@@ -53,7 +53,7 @@ export default function About() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mt-8 sm:mt-12 pt-8 sm:pt-10 border-t border-gold/10">
                         {[
                             { value: '6.5', label: 'Acres Developed' },
-                            { value: '40+', label: 'Premium Plots' },
+                            { value: '87', label: 'Premium Plots' },
                             { value: '100%', label: 'Clear Titles' },
                             { value: '∞', label: 'Trust' },
                         ].map((stat) => (

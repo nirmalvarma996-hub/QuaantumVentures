@@ -13,7 +13,7 @@ import PageLoader from './components/PageLoader';
 import FloatingButtons from './components/FloatingButtons';
 
 /**
- * Quantamm Ventures - Premium Real Estate Website
+ * quaantumm Ventures - Premium Real Estate Website
  * A premium gated plotting community at the heart of Tirupati.
  */
 function App() {

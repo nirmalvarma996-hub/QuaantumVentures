@@ -1,42 +1,55 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaQuoteLeft, FaChevronLeft, FaChevronRight, FaStar } from 'react-icons/fa';
 
 /**
  * Testimonials Slider Section — properly centered with consistent padding
+ * with auto-scroll functionality
  */
 const testimonials = [
     {
-        name: 'Rajesh Kumar',
-        role: 'IT Professional, Bangalore',
-        text: 'Quantamm Ventures offered me the perfect investment opportunity in Tirupati. The location near the IT hub and the transparency in documentation made my decision easy. Highly recommended!',
+        name: 'Prabhakar raju',
+        role: 'Contractor, Rajampeta',
+        text: 'Quaantumm Ventures offered me the perfect investment opportunity in Tirupati. The location near the 150 ft main road and the transparency in documentation made my decision easy. Highly recommended!',
         rating: 5,
     },
     {
-        name: 'Srinivas Reddy',
-        role: 'Business Owner, Tirupati',
-        text: "Being a local businessman, I know the growth potential of this area. The 150 ft main road facing and proximity to RTO office make this a golden investment. Quantamm's professionalism is unmatched.",
+        name: 'Murali Mohan Reddy',
+        role: 'Business Owner, Kurnool',
+        text: "Quaantumm Ventures is a great company with a great vision. The location near the 150 ft main road and the transparency in documentation made my decision easy. Highly recommended!",
         rating: 5,
     },
     {
-        name: 'Priya Lakshmi',
+        name: 'Chakri Raju',
         role: 'NRI Investor, USA',
         text: "Even from abroad, the team made the entire process seamless. The clear titles, premium layout, and Tirupati's spiritual significance make this a must-have asset for my family.",
         rating: 5,
     },
     {
-        name: 'Dr. Venkatesh Naidu',
-        role: 'Doctor, Hyderabad',
-        text: "I've invested in multiple properties across AP, but the value proposition at Quantamm Ventures stands out. The appreciation potential with the upcoming government offices is remarkable.",
+        name: 'A.V Naidu',
+        role: 'Bank Employee, Tirupati',
+        text: "I've invested in quaantumm Ventures, but the value proposition at quaantumm Ventures stands out. The appreciation potential with the upcoming government offices is remarkable.",
         rating: 5,
     },
 ];
 
 export default function Testimonials() {
     const [current, setCurrent] = useState(0);
+    const [isHovered, setIsHovered] = useState(false);
 
-    const next = () => setCurrent((c) => (c + 1) % testimonials.length);
-    const prev = () => setCurrent((c) => (c - 1 + testimonials.length) % testimonials.length);
+    const next = useCallback(() => {
+        setCurrent((c) => (c + 1) % testimonials.length);
+    }, []);
+
+    const prev = useCallback(() => {
+        setCurrent((c) => (c - 1 + testimonials.length) % testimonials.length);
+    }, []);
+
+    useEffect(() => {
+        if (isHovered) return;
+        const timer = setInterval(next, 12000);
+        return () => clearInterval(timer);
+    }, [next, isHovered]);
 
     return (
         <section className="py-20 md:py-28 px-4 sm:px-6 md:px-8 lg:px-12 bg-charcoal relative overflow-hidden">
@@ -77,6 +90,8 @@ export default function Testimonials() {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -50 }}
                             transition={{ duration: 0.4 }}
+                            onMouseEnter={() => setIsHovered(true)}
+                            onMouseLeave={() => setIsHovered(false)}
                             className="glass-card-dark p-6 sm:p-8 md:p-12 text-center"
                         >
                             <FaQuoteLeft className="text-gold/30 text-3xl sm:text-4xl mx-auto mb-5 sm:mb-6" />

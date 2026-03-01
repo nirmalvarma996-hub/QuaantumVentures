@@ -1,5 +1,5 @@
 /**
- * Plot Coordinate System for Quantamm Ventures Residential Layout
+ * Plot Coordinate System for quaantumm Ventures Residential Layout
  * S.Nos: 59-5B & 75-4A, 4B of Mangalam (V), Tirupati (U) Mandal
  *
  * Scale: 1 meter = 5 SVG units  |  1 foot ≈ 1.524 SVG units
@@ -15,8 +15,8 @@ import { calculateArea, calculateIrregularArea } from '../utils/areaCalculator';
 export const GRID = {
     // ── X-axis (left → right) ──
     LEFT_BOUNDARY: 80,
-    OPEN_SPACE_R: 155,   // Public Open Space right edge (~50')
-    ROAD_9M_L: [155, 200],  // Left 9M road
+    OPEN_SPACE_R: 170,   // Public Open Space right edge
+    ROAD_9M_L: [170, 220],  // Left 9M road
     ZONE_B_L: 200,
     ZONE_B_M: 246,   // Mid-line between 2 plot columns
     ZONE_B_R: 292,
@@ -29,7 +29,7 @@ export const GRID = {
     ZONE_D_M: 535,
     ZONE_D_R: 581,
     RIGHT_COL: [581, 627],  // East-facing column (30' deep)
-    BOUNDARY_R: 640,
+    BOUNDARY_R: 645,
     ROAD_80: [655, 777],  // Existing 80' road
 
     // ── Y-axis (top → bottom) ──
@@ -49,8 +49,8 @@ export const GRID = {
 
 export const BOUNDARY_POINTS = [
     [420, 40],    // Peak (conical top)
-    [640, 280],   // Right boundary top (steeper incline)
-    [635, 1100],  // Right boundary bottom (inclined slightly left and lowered)
+    [645, 280],   // Right boundary top (steeper incline)
+    [640, 1100],  // Right boundary bottom (inclined slightly left and lowered)
     [120, 1120],  // Left boundary bottom (lowered)
     [80, 200],    // Left boundary top
 ];
@@ -93,7 +93,7 @@ export const ROADS = [
     {
         id: 'road-12m-horizontal',
         label: '12M WIDE LAYOUT ROAD',
-        x: 80, y: 489, width: 560, height: 60,
+        x: 80, y: 477, width: 565, height: 60,
         orientation: 'horizontal',
     },
     {
@@ -118,14 +118,14 @@ export const ROADS = [
         // Keep the same ROAD60_TOP values as used above so both left/right interpolation match
         const ROAD60_TOP = { x1: 80, y1: 1121, x2: 710, y2: 1097 };
         const road60TopYAt = (x) => ROAD60_TOP.y1 + (ROAD60_TOP.y2 - ROAD60_TOP.y1) / (ROAD60_TOP.x2 - ROAD60_TOP.x1) * (x - ROAD60_TOP.x1);
-        const x0 = 185; const x1 = 230;
+        const x0 = 170; const x1 = 220;
         const y0 = Math.round(road60TopYAt(x0));
         const y1val = Math.round(road60TopYAt(x1));
         return {
             id: 'road-9m-left',
             label: '9M WIDE LAYOUT ROAD',
-            points: [[185, 151], [230, 130], [230, y1val], [185, y0]],
-            cx: 207.5, // Center for text
+            points: [[170, 157], [220, 134], [220, y1val], [170, y0]],
+            cx: 195, // Center for text
             cy: 620, // Center for text
             orientation: 'vertical',
         };
@@ -141,8 +141,8 @@ export const OPEN_SPACES = [
         id: 'public-open-space-left',
         label: 'PUBLIC\nOPEN\nSPACE',
         // Slope equation from (80,200) to (120,1090).
-        // x at y=489 is: 80 + (120-80)/(1090-200) * (489-200) \u2248 80 + 40/890 * 289 \u2248 93
-        points: [[80, 200], [185, 151], [185, 489], [93, 489]],
+        // x at y=477 is: 80 + (120-80)/(1090-200) * (477-200) ≈ 80 + 40/890 * 277 ≈ 92.5
+        points: [[80, 200], [170, 157], [170, 477], [92.5, 477]],
         fill: 'green',
         areaAcres: 0.65, // estimate
     },
@@ -150,13 +150,13 @@ export const OPEN_SPACES = [
         id: 'others-land-right',
         label: 'OTHERS LAND',
         areaText: '',
-        points: [[640, 280], [710, 280], [710, 1097], [635, 1100]],
+        points: [[645, 280], [710, 280], [710, 1097], [640, 1100]],
         fill: 'hatch',
     },
     {
         id: 'utility-space',
         label: 'UTILITY',
-        points: [[230, 279], [287, 279], [287, 330], [230, 330]],
+        points: [[220, 279], [275, 279], [275, 330], [220, 330]],
         fill: 'utility',
         areaAcres: 0.05,
     },
@@ -174,138 +174,141 @@ const PH = 57; // plot height
 const PH2 = 43; // aligned with Zone H (43 units)
 const PH3 = 51; // plot height for zone D
 const PH4 = 43; // aligned with Zone H (43 units)
-const PW2 = 60; // wider width for plots 31-61
-const PW3 = 57; // width to cover gap
-const LOWER_START = 551; // just below 12M road
-const ZONE_D_LOWER = 551; // same as lower start
+const ZONE_F_WIDTH = 72; // reduced from 77
+const ZONE_G_WIDTH = 55; // increased from 50 to compensate for Zone F reduction and maintain road alignment
+const ZONE_D_WIDTH = 66; // wider width for plots 16-31
+const ZONE_E_WIDTH = 54; // narrower width for plots 32-46 to keep combined space
+const LOWER_START = 566; // shifted down to account for initial height increase
+const ZONE_D_LOWER = 566; // same as lower start
 const ZONE_D_START = 226; // just below OTHERS LAND line
-const ZONE_D_UPPER_X = 549 - PW2; // right edge touches 9M road at x=549
-const ZONE_E_UPPER_X = ZONE_D_UPPER_X - PW2 - 2; // left of new zone D
+const ZONE_D_UPPER_X = 549 - ZONE_D_WIDTH; // right edge touches 9M road at x=549
+const ZONE_E_UPPER_X = ZONE_D_UPPER_X - ZONE_E_WIDTH - 2; // left of new zone D
 const ZONE_E_START = 279; // aligned with plot 30
-const ZONE_F_UPPER_X = 347 - PW2; // road left edge
+const ZONE_F_UPPER_X = 347 - ZONE_F_WIDTH; // road left edge
 const ZONE_F_START = 279; // aligned with plots 32-35
-const ZONE_G_UPPER_X = 230; // matches utility space
-const ZONE_G_START = 279 + PH3 + 2; // below utility space
+const ZONE_G_UPPER_X = ZONE_F_UPPER_X - ZONE_G_WIDTH; // left side of new Zone G
+const PH3_REDUCED = 48; // slightly reduced height for upper zones
+const ZONE_G_START = 279 + PH3_REDUCED + 2; // below utility space
 const PH5 = 43; // Zone H standard
 
 const rightCol = [
-    { plotNumber: 1, x: 594, y: 230, w: PW, h: 100, lengthFt: 48, widthFt: 30, facing: 'West', status: 'sold', shape: 'polygon', points: [[594.2, 230], [640, 280], [639.7, 330], [594, 330]], irregularDimensions: { west: "71'11\"", south: "43'9\"", east: "27'7\"" } },
-    { plotNumber: 2, x: 594, y: 332, w: PW, h: PH3, lengthFt: 43, widthFt: 30, facing: 'West', status: 'reserved', shape: 'polygon', points: [[594, 332], [639.7, 332], [639.3, 383], [594, 383]], irregularDimensions: { west: "30'", east: "30'", south: "43'7\"", north: "43'9\"" } },
-    { plotNumber: 3, x: 594, y: 385, w: PW, h: PH3, lengthFt: 43, widthFt: 30, facing: 'West', status: 'reserved', shape: 'polygon', points: [[594, 385], [639.3, 385], [639, 436], [594, 436]], irregularDimensions: { west: "30'", east: "30'", north: "43'7\"", south: "43'4\"" } },
-    { plotNumber: 4, x: 594, y: 438, w: PW, h: PH3, lengthFt: 43, widthFt: 30, facing: 'West', status: 'reserved', shape: 'polygon', points: [[594, 438], [639, 438], [638.6, 489], [594, 489]], irregularDimensions: { west: "30'", east: "30'", north: "43'4\"", south: "43'2\"" } },
+    { plotNumber: 1, x: 594, y: 230, w: PW, h: 100, lengthFt: 48, widthFt: 30, facing: 'West', status: 'sold', shape: 'polygon', points: [[594.2, 230], [645, 280], [644.7, 330], [594, 330]], irregularDimensions: { west: "71'11\"", south: "43'9\"", east: "27'7\"" } },
+    { plotNumber: 2, x: 594, y: 329, w: PW, h: 48, lengthFt: 43, widthFt: 30, facing: 'West', status: 'sold', shape: 'polygon', points: [[594, 329], [644.7, 329], [644.4, 377], [594, 377]], irregularDimensions: { west: "30'", east: "30'", south: "43'7\"", north: "43'9\"" } },
+    { plotNumber: 3, x: 594, y: 379, w: PW, h: 48, lengthFt: 43, widthFt: 30, facing: 'West', status: 'sold', shape: 'polygon', points: [[594, 379], [644.4, 379], [644.1, 427], [594, 427]], irregularDimensions: { west: "30'", east: "30'", north: "43'7\"", south: "43'4\"" } },
+    { plotNumber: 4, x: 594, y: 429, w: PW, h: 48, lengthFt: 43, widthFt: 30, facing: 'West', status: 'sold', shape: 'polygon', points: [[594, 429], [644.1, 429], [643.8, 477], [594, 477]], irregularDimensions: { west: "30'", east: "30'", north: "43'4\"", south: "43'2\"" } },
 ];
 
 /* ─── Right column lower (East facing, plots 5–15, below 12M road) ─── */
 
 const rightColLower = [
-    { plotNumber: 5, x: 594, y: LOWER_START, w: PW, h: PH2, lengthFt: 42, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 551], [638.3, 551], [638.1, 594], [594, 594]] },
-    { plotNumber: 6, x: 594, y: LOWER_START + (PH2 + 2), w: PW, h: PH2, lengthFt: 42, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 596], [638.1, 596], [637.8, 639], [594, 639]] },
-    { plotNumber: 7, x: 594, y: LOWER_START + (PH2 + 2) * 2, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 641], [637.8, 641], [637.5, 684], [594, 684]] },
-    { plotNumber: 8, x: 594, y: LOWER_START + (PH2 + 2) * 3, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 686], [637.5, 686], [637.2, 729], [594, 729]] },
-    { plotNumber: 9, x: 594, y: LOWER_START + (PH2 + 2) * 4, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 731], [637.2, 731], [637, 774], [594, 774]] },
-    { plotNumber: 10, x: 594, y: LOWER_START + (PH2 + 2) * 5, w: PW, h: PH2, lengthFt: 41, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 776], [637, 776], [636.7, 819], [594, 819]] },
-    { plotNumber: 11, x: 594, y: LOWER_START + (PH2 + 2) * 6, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 821], [636.7, 821], [636.4, 864], [594, 864]] },
-    { plotNumber: 12, x: 594, y: LOWER_START + (PH2 + 2) * 7, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 866], [636.4, 866], [636.1, 909], [594, 909]] },
-    { plotNumber: 13, x: 594, y: LOWER_START + (PH2 + 2) * 8, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 911], [636.1, 911], [635.8, 954], [594, 954]] },
-    { plotNumber: 14, x: 594, y: LOWER_START + (PH2 + 2) * 9, w: PW, h: PH2, lengthFt: 40, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 956], [635.8, 956], [635.6, 999], [594, 999]] },
-    { plotNumber: 15, x: 594, y: 1001, w: PW, h: 52, lengthFt: 45, widthFt: 30, facing: 'East', status: 'available', shape: 'polygon', points: [[594, 1001], [635.6, 1001], [635, 1100], [594, 1101.6]] },
+    { plotNumber: 5, x: 594, y: 537, w: PW, h: 60, lengthFt: 70, widthFt: 42, facing: 'West', status: 'sold', shape: 'polygon', points: [[594, 537], [643.5, 537], [643.0, 609], [594, 609]], irregularDimensions: { east: "60'", west: "60'", north: "42'10\"", south: "42'5\"" } },
+    { plotNumber: 6, x: 594, y: LOWER_START + (PH2 + 2), w: PW, h: PH2, lengthFt: 42, widthFt: 36, facing: 'West', status: 'sold', shape: 'polygon', points: [[594, 611], [643.0, 611], [642.7, 654], [594, 654]], irregularDimensions: { east: "36'", west: "36'", north: "42'5\"", south: "42'2\"" } },
+    { plotNumber: 7, x: 594, y: LOWER_START + (PH2 + 2) * 2, w: PW, h: PH2, lengthFt: 41, widthFt: 36, facing: 'West', status: 'sold', shape: 'polygon', points: [[594, 656], [642.7, 656], [642.4, 699], [594, 699]], irregularDimensions: { east: "36'", west: "36'", north: "42'2\"", south: "41'1\"" } },
+    { plotNumber: 8, x: 594, y: LOWER_START + (PH2 + 2) * 3, w: PW, h: PH2, lengthFt: 41, widthFt: 36, facing: 'West', status: 'available', shape: 'polygon', points: [[594, 701], [642.4, 701], [642.2, 744], [594, 744]], irregularDimensions: { east: "36'", west: "36'", north: "41'11\"", south: "41'8\"" } },
+    { plotNumber: 9, x: 594, y: LOWER_START + (PH2 + 2) * 4, w: PW, h: PH2, lengthFt: 41, widthFt: 36, facing: 'West', status: 'available', shape: 'polygon', points: [[594, 746], [642.2, 746], [641.9, 789], [594, 789]], irregularDimensions: { east: "36'", west: "36'", north: "41'8\"", south: "41'5\"" } },
+    { plotNumber: 10, x: 594, y: LOWER_START + (PH2 + 2) * 5, w: PW, h: PH2, lengthFt: 41, widthFt: 36, facing: 'West', status: 'available', shape: 'polygon', points: [[594, 791], [641.9, 791], [641.6, 834], [594, 834]], irregularDimensions: { east: "36'", west: "36'", north: "41'5\"", south: "41'2\"" } },
+    { plotNumber: 11, x: 594, y: LOWER_START + (PH2 + 2) * 6, w: PW, h: PH2, lengthFt: 40, widthFt: 36, facing: 'West', status: 'available', shape: 'polygon', points: [[594, 836], [641.6, 836], [641.3, 879], [594, 879]], irregularDimensions: { east: "36'", west: "36'", north: "41'2\"", south: "40'11\"" } },
+    { plotNumber: 12, x: 594, y: LOWER_START + (PH2 + 2) * 7, w: PW, h: PH2, lengthFt: 40, widthFt: 36, facing: 'West', status: 'available', shape: 'polygon', points: [[594, 881], [641.3, 881], [641.1, 924], [594, 924]], irregularDimensions: { east: "36'", west: "36'", north: "40'11\"", south: "40'8\"" } },
+    { plotNumber: 13, x: 594, y: LOWER_START + (PH2 + 2) * 8, w: PW, h: PH2, lengthFt: 40, widthFt: 36, facing: 'West', status: 'available', shape: 'polygon', points: [[594, 926], [641.1, 926], [640.8, 969], [594, 969]], irregularDimensions: { east: "36'", west: "36'", north: "40'8\"", south: "40'6\"" } },
+    { plotNumber: 14, x: 594, y: LOWER_START + (PH2 + 2) * 9, w: PW, h: PH2, lengthFt: 40, widthFt: 36, facing: 'West', status: 'sold', shape: 'polygon', points: [[594, 971], [640.8, 971], [640.5, 1014], [594, 1014]], irregularDimensions: { east: "36'", west: "36'", north: "40'6\"", south: "40'4\"" } },
+    { plotNumber: 15, x: 594, y: LOWER_START + (PH2 + 2) * 10, w: PW, h: 96, lengthFt: 71, widthFt: 40, facing: 'West', status: 'sold', shape: 'polygon', points: [[594, 1016], [640.5, 1016], [640, 1100], [594, 1101.6]], irregularDimensions: { west: "71'8\"", east: "68'6\"", north: "40'4\"", south: "40'2\"" } },
 ];
 
 /* ─── Zone D upper (plots 31–27, left of 9M road, above 12M road) ─── */
 
 const zoneDUpper = [
-    { plotNumber: 31, x: ZONE_D_UPPER_X, y: ZONE_D_START, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 30, x: ZONE_D_UPPER_X, y: ZONE_D_START + (PH3 + 2), w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 29, x: ZONE_D_UPPER_X, y: ZONE_D_START + (PH3 + 2) * 2, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 28, x: ZONE_D_UPPER_X, y: ZONE_D_START + (PH3 + 2) * 3, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 27, x: ZONE_D_UPPER_X, y: ZONE_D_START + (PH3 + 2) * 4, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
+    { plotNumber: 31, x: ZONE_D_UPPER_X, y: ZONE_D_START, w: ZONE_D_WIDTH, h: PH3, lengthFt: 60, widthFt: 48.6, facing: 'East', status: 'available', shape: 'rect', irregularDimensions: { west: "48'7\"", east: "48'5\"", north: "60'", south: "60'" } },
+    { plotNumber: 30, x: ZONE_D_UPPER_X, y: ZONE_D_START + PH3 + 2, w: ZONE_D_WIDTH, h: PH3_REDUCED, lengthFt: 60, widthFt: 31.75, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { east: "31'9\"", west: "31'9\"", north: "60'", south: "60'" } },
+    { plotNumber: 29, x: ZONE_D_UPPER_X, y: ZONE_D_START + PH3 + 2 + (PH3_REDUCED + 2), w: ZONE_D_WIDTH, h: PH3_REDUCED, lengthFt: 60, widthFt: 30, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { west: "30'", east: "30'", north: "60'", south: "60'" } },
+    { plotNumber: 28, x: ZONE_D_UPPER_X, y: ZONE_D_START + PH3 + 2 + (PH3_REDUCED + 2) * 2, w: ZONE_D_WIDTH, h: PH3_REDUCED, lengthFt: 60, widthFt: 30, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { west: "30'", east: "30'", north: "60'", south: "60'" } },
+    { plotNumber: 27, x: ZONE_D_UPPER_X, y: ZONE_D_START + PH3 + 2 + (PH3_REDUCED + 2) * 3, w: ZONE_D_WIDTH, h: PH3_REDUCED, lengthFt: 60, widthFt: 36, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { west: "36'", east: "36'", north: "60'", south: "60'" } },
 ];
 
 /* ─── Zone D lower (plots 26–16, left of 9M road, below 12M road) ─── */
 
 const zoneDLower = [
-    { plotNumber: 26, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 25, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2), w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 24, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 2, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 23, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 3, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 22, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 4, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 21, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 5, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 20, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 6, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 19, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 18, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 17, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 16, x: ZONE_D_UPPER_X, y: 1001, w: PW2, h: 60, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'polygon', points: [[489, 1001], [549, 1001], [549, 1103.4], [489, 1105.7]] },
+    { plotNumber: 26, x: ZONE_D_UPPER_X, y: 537, w: ZONE_D_WIDTH, h: 72, lengthFt: 60, widthFt: 60, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { west: "60'", east: "60'", north: "60'", south: "60'" } },
+    { plotNumber: 25, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2), w: ZONE_D_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { west: "36'", east: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 24, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 2, w: ZONE_D_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { west: "36'", east: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 23, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 3, w: ZONE_D_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', irregularDimensions: { west: "36'", east: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 22, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 4, w: ZONE_D_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', irregularDimensions: { west: "36'", east: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 21, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 5, w: ZONE_D_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', irregularDimensions: { west: "36'", east: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 20, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 6, w: ZONE_D_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', irregularDimensions: { west: "36'", east: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 19, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: ZONE_D_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', irregularDimensions: { west: "36'", east: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 18, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: ZONE_D_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { west: "36'", east: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 17, x: ZONE_D_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: ZONE_D_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { west: "36'", east: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 16, x: ZONE_D_UPPER_X, y: 1011, w: ZONE_D_WIDTH, h: 50, lengthFt: 78, widthFt: 60, facing: 'East', status: 'sold', shape: 'polygon', points: [[483, 1011], [549, 1011], [549, 1103.4], [483, 1105.6]], irregularDimensions: { east: "74'", west: "78'8\"", north: "60'", south: "60'2\"" } },
 ];
 
 /* ─── Zone E (plots 32–35, beside plots 30–27, left column) ─── */
 
 const zoneE = [
-    { plotNumber: 32, x: ZONE_E_UPPER_X, y: ZONE_E_START, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 33, x: ZONE_E_UPPER_X, y: ZONE_E_START + (PH3 + 2), w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 34, x: ZONE_E_UPPER_X, y: ZONE_E_START + (PH3 + 2) * 2, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 35, x: ZONE_E_UPPER_X, y: ZONE_E_START + (PH3 + 2) * 3, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
+    { plotNumber: 32, x: ZONE_E_UPPER_X, y: ZONE_E_START, w: ZONE_E_WIDTH, h: PH3_REDUCED, lengthFt: 50, widthFt: 31.75, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { west: "31'9\"", east: "31'9\"", north: "50'", south: "50'" } },
+    { plotNumber: 33, x: ZONE_E_UPPER_X, y: ZONE_E_START + PH3_REDUCED + 2, w: ZONE_E_WIDTH, h: PH3_REDUCED, lengthFt: 50, widthFt: 30, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { east: "30'", west: "30'", north: "50'", south: "50'" } },
+    { plotNumber: 34, x: ZONE_E_UPPER_X, y: ZONE_E_START + PH3_REDUCED + 2 + (PH3_REDUCED + 2), w: ZONE_E_WIDTH, h: PH3_REDUCED, lengthFt: 50, widthFt: 30, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { east: "30'", west: "30'", north: "50'", south: "50'" } },
+    { plotNumber: 35, x: ZONE_E_UPPER_X, y: ZONE_E_START + PH3_REDUCED + 2 + (PH3_REDUCED + 2) * 2, w: ZONE_E_WIDTH, h: PH3_REDUCED, lengthFt: 50, widthFt: 36, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "50'", south: "50'" } },
 ];
 
 /* ─── Zone E lower (plots 36–46, below 12M road, same column as 32–35) ─── */
 const zoneELower = [
-    { plotNumber: 36, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 37, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2), w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 38, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 2, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 39, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 3, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 40, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 4, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 41, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 5, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 42, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 6, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 43, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 44, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'rect' },
-    { plotNumber: 45, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'North', status: 'available', shape: 'rect' },
-    { plotNumber: 46, x: ZONE_E_UPPER_X, y: 1001, w: PW2, h: 65, lengthFt: 30, widthFt: 36, facing: 'South', status: 'available', shape: 'polygon', points: [[427, 1001], [487, 1001], [487, 1105.8], [427, 1108.1]] },
+    { plotNumber: 36, x: ZONE_E_UPPER_X, y: 537, w: ZONE_E_WIDTH, h: 72, lengthFt: 50, widthFt: 60, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { west: "60'", east: "60'", north: "50'", south: "50'" } },
+    { plotNumber: 37, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2), w: ZONE_E_WIDTH, h: PH4, lengthFt: 50, widthFt: 60, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { west: "60'", east: "60'", north: "50'", south: "50'" } },
+    { plotNumber: 38, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 2, w: ZONE_E_WIDTH, h: PH4, lengthFt: 50, widthFt: 60, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { west: "60'", east: "60'", north: "50'", south: "50'" } },
+    { plotNumber: 39, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 3, w: ZONE_E_WIDTH, h: PH4, lengthFt: 50, widthFt: 60, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { west: "60'", east: "60'", north: "50'", south: "50'" } },
+    { plotNumber: 40, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 4, w: ZONE_E_WIDTH, h: PH4, lengthFt: 50, widthFt: 60, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { west: "60'", east: "60'", north: "50'", south: "50'" } },
+    { plotNumber: 41, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 5, w: ZONE_E_WIDTH, h: PH4, lengthFt: 50, widthFt: 60, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { west: "60'", east: "60'", north: "50'", south: "50'" } },
+    { plotNumber: 42, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 6, w: ZONE_E_WIDTH, h: PH4, lengthFt: 50, widthFt: 60, facing: 'West', status: 'available', shape: 'rect', irregularDimensions: { west: "60'", east: "60'", north: "50'", south: "50'" } },
+    { plotNumber: 43, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: ZONE_E_WIDTH, h: PH4, lengthFt: 50, widthFt: 60, facing: 'West', status: 'available', shape: 'rect', irregularDimensions: { west: "60'", east: "60'", north: "50'", south: "50'" } },
+    { plotNumber: 44, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: ZONE_E_WIDTH, h: PH4, lengthFt: 50, widthFt: 60, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { west: "60'", east: "60'", north: "50'", south: "50'" } },
+    { plotNumber: 45, x: ZONE_E_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: ZONE_E_WIDTH, h: PH4, lengthFt: 50, widthFt: 60, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { west: "60'", east: "60'", north: "50'", south: "50'" } },
+    { plotNumber: 46, x: ZONE_E_UPPER_X, y: 1011, w: ZONE_E_WIDTH, h: 55, lengthFt: 50, widthFt: 82, facing: 'West', status: 'sold', shape: 'polygon', points: [[427, 1011], [481, 1011], [481, 1105.7], [427, 1108.1]], irregularDimensions: { east: "78'8\"", west: "82'7\"", north: "50'", south: "50'2\"" } },
 ];
 
 /* ─── Zone F upper (plots 61–58, left of 12M vertical road, above 12M horizontal road) ─── */
 
 const zoneFUpper = [
-    { plotNumber: 61, x: ZONE_F_UPPER_X, y: ZONE_F_START, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 60, x: ZONE_F_UPPER_X, y: ZONE_F_START + (PH3 + 2), w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 59, x: ZONE_F_UPPER_X, y: ZONE_F_START + (PH3 + 2) * 2, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 58, x: ZONE_F_UPPER_X, y: ZONE_F_START + (PH3 + 2) * 3, w: PW2, h: PH3, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', textX: 298 },
+    { plotNumber: 61, x: ZONE_F_UPPER_X, y: ZONE_F_START, w: ZONE_F_WIDTH, h: PH3_REDUCED, lengthFt: 60, widthFt: 31.75, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { east: "31'9\"", west: "31'9\"", north: "60'", south: "60'" } },
+    { plotNumber: 60, x: ZONE_F_UPPER_X, y: ZONE_F_START + PH3_REDUCED + 2, w: ZONE_F_WIDTH, h: PH3_REDUCED, lengthFt: 60, widthFt: 30, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { east: "30'", west: "30'", north: "60'", south: "60'" } },
+    { plotNumber: 59, x: ZONE_F_UPPER_X, y: ZONE_F_START + PH3_REDUCED + 2 + (PH3_REDUCED + 2), w: ZONE_F_WIDTH, h: PH3_REDUCED, lengthFt: 60, widthFt: 30, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { east: "30'", west: "30'", north: "60'", south: "60'" } },
+    { plotNumber: 58, x: ZONE_F_UPPER_X, y: ZONE_F_START + PH3_REDUCED + 2 + (PH3_REDUCED + 2) * 2, w: ZONE_F_WIDTH, h: PH3_REDUCED, lengthFt: 30, widthFt: 36, facing: 'East', status: 'sold', shape: 'rect' },
 ];
 
 /* ─── Zone G upper (plots 62–64, left of 60-58, below Utility Space) ─── */
 
 const zoneGUpper = [
-    { plotNumber: 62, x: ZONE_G_UPPER_X, y: ZONE_G_START, w: PW3, h: PH3, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 63, x: ZONE_G_UPPER_X, y: ZONE_G_START + (PH3 + 2), w: PW3, h: PH3, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 64, x: ZONE_G_UPPER_X, y: ZONE_G_START + (PH3 + 2) * 2, w: PW3, h: PH3, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
+    { plotNumber: 62, x: ZONE_G_UPPER_X, y: ZONE_G_START, w: ZONE_G_WIDTH, h: PH3_REDUCED, lengthFt: 42, widthFt: 28.875, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { east: "30'", west: "27'9\"", north: "42'", south: "42'" } },
+    { plotNumber: 63, x: ZONE_G_UPPER_X, y: ZONE_G_START + PH3_REDUCED + 2, w: ZONE_G_WIDTH, h: PH3_REDUCED, lengthFt: 42, widthFt: 30, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { east: "30'", west: "30'", north: "42'", south: "42'" } },
+    { plotNumber: 64, x: ZONE_G_UPPER_X, y: ZONE_G_START + PH3_REDUCED + 2 + (PH3_REDUCED + 2), w: ZONE_G_WIDTH, h: PH3_REDUCED, lengthFt: 42, widthFt: 36, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "42'", south: "42'" } },
 ];
 
 /* ─── Zone F lower (plots 57–47, left of 12M vertical road, below 12M horizontal road) ─── */
 const zoneFLower = [
-    { plotNumber: 57, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 56, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2), w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 55, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 2, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 54, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 3, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 53, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 4, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 52, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 5, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 51, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 6, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 50, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 49, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 48, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: PW2, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 47, x: ZONE_F_UPPER_X, y: 1001, w: PW2, h: 76, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'polygon', points: [[287, 1001], [347, 1001], [347, 1111.2], [287, 1113.5]] },
+    { plotNumber: 57, x: ZONE_F_UPPER_X, y: 537, w: ZONE_F_WIDTH, h: 72, lengthFt: 60, widthFt: 60, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { east: "60'", west: "60'", north: "60'", south: "60'" } },
+    { plotNumber: 56, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2), w: ZONE_F_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 55, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 2, w: ZONE_F_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 54, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 3, w: ZONE_F_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 53, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 4, w: ZONE_F_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 52, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 5, w: ZONE_F_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 51, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 6, w: ZONE_F_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 50, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: ZONE_F_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 49, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: ZONE_F_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 48, x: ZONE_F_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: ZONE_F_WIDTH, h: PH4, lengthFt: 60, widthFt: 36, facing: 'East', status: 'sold', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "60'", south: "60'" } },
+    { plotNumber: 47, x: ZONE_F_UPPER_X, y: 1011, w: ZONE_F_WIDTH, h: 66, lengthFt: 60.08, widthFt: 88.08, facing: 'East', status: 'sold', shape: 'polygon', points: [[275, 1011], [347, 1011], [347, 1111.2], [275, 1113.3]], irregularDimensions: { north: "60'", south: "60'2\"", east: "85'9\"", west: "90'5\"" } },
 ];
 
 /* ─── Zone G lower (plots 65–75, left of 57-47, below 12M horizontal road) ─── */
 const zoneGLower = [
-    { plotNumber: 65, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 66, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2), w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 67, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 2, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 68, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 3, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 69, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 4, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 70, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 5, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect', textX: 240 },
-    { plotNumber: 71, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 6, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 72, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 73, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 74, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: PW3, h: PH4, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'rect' },
-    { plotNumber: 75, x: ZONE_G_UPPER_X, y: 1001, w: PW3, h: 80, lengthFt: 30, widthFt: 36, facing: 'East', status: 'available', shape: 'polygon', points: [[230, 1001], [287, 1001], [287, 1113.5], [230, 1115.7]] },
+    { plotNumber: 65, x: ZONE_G_UPPER_X, y: 537, w: ZONE_G_WIDTH, h: 72, lengthFt: 60, widthFt: 42, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { east: "60'", west: "60'", north: "42'", south: "42'" } },
+    { plotNumber: 66, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2), w: ZONE_G_WIDTH, h: PH4, lengthFt: 42, widthFt: 36, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "42'", south: "42'" } },
+    { plotNumber: 67, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 2, w: ZONE_G_WIDTH, h: PH4, lengthFt: 42, widthFt: 36, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "42'", south: "42'" } },
+    { plotNumber: 68, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 3, w: ZONE_G_WIDTH, h: PH4, lengthFt: 42, widthFt: 36, facing: 'West', status: 'available', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "42'", south: "42'" } },
+    { plotNumber: 69, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 4, w: ZONE_G_WIDTH, h: PH4, lengthFt: 42, widthFt: 36, facing: 'West', status: 'available', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "42'", south: "42'" } },
+    { plotNumber: 70, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 5, w: ZONE_G_WIDTH, h: PH4, lengthFt: 42, widthFt: 36, facing: 'West', status: 'available', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "42'", south: "42'" } },
+    { plotNumber: 71, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 6, w: ZONE_G_WIDTH, h: PH4, lengthFt: 42, widthFt: 36, facing: 'West', status: 'available', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "42'", south: "42'" } },
+    { plotNumber: 72, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 7, w: ZONE_G_WIDTH, h: PH4, lengthFt: 42, widthFt: 36, facing: 'West', status: 'available', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "42'", south: "42'" } },
+    { plotNumber: 73, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 8, w: ZONE_G_WIDTH, h: PH4, lengthFt: 42, widthFt: 36, facing: 'West', status: 'available', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "42'", south: "42'" } },
+    { plotNumber: 74, x: ZONE_G_UPPER_X, y: ZONE_D_LOWER + (PH4 + 2) * 9, w: ZONE_G_WIDTH, h: PH4, lengthFt: 42, widthFt: 36, facing: 'West', status: 'sold', shape: 'rect', irregularDimensions: { east: "36'", west: "36'", north: "42'", south: "42'" } },
+    { plotNumber: 75, x: ZONE_G_UPPER_X, y: 1011, w: ZONE_G_WIDTH, h: 70, lengthFt: 92.08, widthFt: 42.08, facing: 'West', status: 'sold', shape: 'polygon', points: [[220, 1011], [275, 1011], [275, 1113.3], [220, 1115.7]], irregularDimensions: { east: "90'5\"", west: "93'9\"", north: "42'", south: "42'2\"" } },
 ];
 
 /* ─── Zone H lower (plots 87–76, left of 9m road) ─── */
@@ -315,7 +318,7 @@ const zoneGLower = [
 const getLeftX = (y) => 80 + (40 / 890) * (y - 200);
 
 const yVals = Array.from({ length: 13 }, (_, i) => ZONE_D_LOWER + i * (PH5 + 2));
-const rightX = 185; // Edge of 9m road
+const rightX = 170; // Edge of 9m road
 
 const createSlantedPlot = (num, idx) => {
     const yTop = yVals[idx];
@@ -335,23 +338,101 @@ const createSlantedPlot = (num, idx) => {
 };
 
 const zoneHLower = [
-    createSlantedPlot(87, 0),
-    createSlantedPlot(86, 1),
-    createSlantedPlot(85, 2),
-    createSlantedPlot(84, 3),
-    createSlantedPlot(83, 4),
-    createSlantedPlot(82, 5),
-    createSlantedPlot(81, 6),
-    createSlantedPlot(80, 7),
-    createSlantedPlot(79, 8),
-    createSlantedPlot(78, 9),
-    createSlantedPlot(77, 10),
+    {
+        plotNumber: 87,
+        x: getLeftX(537), y: 537, w: rightX - (getLeftX(537) + getLeftX(537 + 72)) / 2, h: 72,
+        lengthFt: 56.83, widthFt: 60.08, facing: 'East', status: 'sold',
+        shape: 'polygon',
+        points: [[getLeftX(537), 537], [rightX, 537], [rightX, 537 + 72], [getLeftX(537 + 72), 537 + 72]],
+        irregularDimensions: { north: "58'", south: "55'8\"", east: "60'", west: "60'1\"" }
+    },
+    {
+        plotNumber: 86,
+        x: 98.47, y: 611, w: 70.565, h: 43,
+        lengthFt: 54.955, widthFt: 48.04, facing: 'East', status: 'sold',
+        shape: 'polygon',
+        points: [[98.47, 611], [170, 611], [170, 654], [100.4, 654]],
+        irregularDimensions: { north: "55'8\"", south: "54'3\"", east: "36'", west: "60'1\"" }
+    },
+    {
+        plotNumber: 85,
+        x: 100.49, y: 656, w: 68.54, h: 43,
+        lengthFt: 53.54, widthFt: 48.04, facing: 'East', status: 'sold',
+        shape: 'polygon',
+        points: [[100.49, 656], [170, 656], [170, 699], [102.43, 699]],
+        irregularDimensions: { north: "54'3\"", south: "52'10\"", east: "36'", west: "60'1\"" }
+    },
+    {
+        plotNumber: 84,
+        x: 102.52, y: 701, w: 66.52, h: 43,
+        lengthFt: 52.17, widthFt: 48.04, facing: 'East', status: 'available',
+        shape: 'polygon',
+        points: [[102.52, 701], [170, 701], [170, 744], [104.45, 744]],
+        irregularDimensions: { north: "52'10\"", south: "51'6\"", east: "36'", west: "60'1\"" }
+    },
+    {
+        plotNumber: 83,
+        x: 104.54, y: 746, w: 64.495, h: 43,
+        lengthFt: 50.79, widthFt: 48.04, facing: 'East', status: 'available',
+        shape: 'polygon',
+        points: [[104.54, 746], [170, 746], [170, 789], [106.47, 789]],
+        irregularDimensions: { north: "51'6\"", south: "50'1\"", east: "36'", west: "60'1\"" }
+    },
+    {
+        plotNumber: 82,
+        x: 106.56, y: 791, w: 62.475, h: 43,
+        lengthFt: 49.375, widthFt: 48.04, facing: 'East', status: 'available',
+        shape: 'polygon',
+        points: [[106.56, 791], [170, 791], [170, 834], [108.49, 834]],
+        irregularDimensions: { north: "50'1\"", south: "48'8\"", east: "36'", west: "60'1\"" }
+    },
+    {
+        plotNumber: 81,
+        x: 108.59, y: 836, w: 60.44, h: 43,
+        lengthFt: 48, widthFt: 48.04, facing: 'East', status: 'available',
+        shape: 'polygon',
+        points: [[108.59, 836], [170, 836], [170, 879], [110.51, 879]],
+        irregularDimensions: { north: "48'8\"", south: "47'4\"", east: "36'", west: "60'1\"" }
+    },
+    {
+        plotNumber: 80,
+        x: 110.61, y: 881, w: 58.42, h: 43,
+        lengthFt: 46.625, widthFt: 48.04, facing: 'East', status: 'available',
+        shape: 'polygon',
+        points: [[110.61, 881], [170, 881], [170, 924], [112.54, 924]],
+        irregularDimensions: { north: "47'4\"", south: "45'11\"", east: "36'", west: "60'1\"" }
+    },
+    {
+        plotNumber: 79,
+        x: 112.63, y: 926, w: 56.4, h: 43,
+        lengthFt: 44.96, widthFt: 48.04, facing: 'East', status: 'sold',
+        shape: 'polygon',
+        points: [[112.63, 926], [170, 926], [170, 969], [114.56, 969]],
+        irregularDimensions: { north: "45'11\"", south: "44'", east: "36'", west: "60'1\"" }
+    },
+    {
+        plotNumber: 78,
+        x: 114.65, y: 971, w: 54.385, h: 43,
+        lengthFt: 43.46, widthFt: 48.04, facing: 'East', status: 'available',
+        shape: 'polygon',
+        points: [[114.65, 971], [170, 971], [170, 1014], [116.58, 1014]],
+        irregularDimensions: { north: "44'", south: "42'11\"", east: "36'", west: "60'1\"" }
+    },
+    {
+        plotNumber: 77,
+        x: 116.67, y: 1016, w: 52.345, h: 43,
+        lengthFt: 42.21, widthFt: 48.04, facing: 'East', status: 'sold',
+        shape: 'polygon',
+        points: [[116.67, 1016], [170, 1016], [170, 1059], [118.6, 1059]],
+        irregularDimensions: { north: "42'11\"", south: "41'6\"", east: "36'", west: "60'1\"" }
+    },
     {
         plotNumber: 76,
-        x: 118, y: 1046, w: 67, h: 44,
-        lengthFt: 30, widthFt: 36, facing: 'East', status: 'available',
+        x: 118, y: 1061, w: 52, h: 58,
+        lengthFt: 40.46, widthFt: 61.67, facing: 'East', status: 'sold',
         shape: 'polygon',
-        points: [[118, 1046], [185, 1046], [185, 1117.5], [120, 1120]]
+        points: [[118, 1061], [170, 1061], [170, 1117.6], [120, 1120]],
+        irregularDimensions: { north: "41'6\"", south: "39'5\"", east: "60'2\"", west: "63'2\"" }
     },
 ];
 
