@@ -77,8 +77,8 @@ export default function Hero() {
                             TUDA Approved
                         </span>
                         <span className="text-green-400/60 text-xs">|</span>
-                        <span className="text-green-200/80 text-xs sm:text-sm font-medium">
-                            LP No: TUDA/LP/2024/1234
+                        <span className="text-green-200/80 text-xs sm:text-sm font-medium italic">
+                            LP No: Coming Soon
                         </span>
                     </div>
                 </motion.div>
@@ -124,6 +124,31 @@ export default function Hero() {
                     <br />
                     — Where tradition meets modern investment.
                 </motion.p>
+
+                {/* Price Information */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.8 }}
+                    className="mb-10 flex items-center justify-center"
+                >
+                    <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gold/5 border border-gold/20 backdrop-blur-sm group hover:border-gold/40 transition-all duration-300">
+                        <span className="text-ivory/80 text-sm sm:text-base md:text-lg">
+                            Price starts from <span className="text-gold font-bold">₹1.6 Lakhs</span> per Tirupati Ankanam
+                        </span>
+                        <div className="relative cursor-help">
+                            <span className="text-gold font-bold text-xl leading-none">*</span>
+                            {/* Premium Tooltip */}
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 p-4 rounded-xl bg-charcoal/95 backdrop-blur-md border border-gold/40 shadow-[0_10px_40px_rgba(0,0,0,0.5)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-[100]">
+                                <p className="text-ivory text-xs leading-relaxed font-semibold">
+                                    Final pricing may vary depending on the specific plot dimensions and orientation.
+                                </p>
+                                {/* Tooltip Arrow */}
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-gold/40" />
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
 
                 {/* CTA Buttons */}
                 <motion.div
